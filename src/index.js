@@ -1,34 +1,27 @@
-"use strict";
+// src/index.js
 import express from "express";
 import { connectDB } from "./data/database/dbConfig.js";
-import userRoutes from "./presentation/routes/userRoutes.js";
-import path from "path";
-import { fileURLToPath } from "url";
+import { configureMiddleware } from "./middleware.js";
+import { configureRoutes } from "./routes.js";
 import dotenv from "dotenv";
+import { log } from "./utils/logger.js";
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Directory __dirname replacement
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Configure middleware
+configureMiddleware(app);
 
-// Set view engine
-app.set("views", path.join(__dirname, "presentation", "views"));
-app.set("view engine", "ejs");
+// Configure routes
+configureRoutes(app);
 
-// Serve static files
-app.use(express.static(path.join(__dirname, "public")));
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.use("/api/users", userRoutes);
-
+// Database connection
 connectDB();
 
+// Define home route
 app.get("/", (req, res) => res.render("index"));
 
-app.listen(port, () => console.log(`Server running on port ${port}`));
+// Start server
+app.listen(port, () => log(`Server running on port ${port}`));

@@ -1,31 +1,23 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../database/dbConfig.js";
 
-const User = sequelize.define(
-  "User",
+const Photo = sequelize.define(
+  "Photo",
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    username: {
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    photoUrl: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    profilePicture: {
-      type: DataTypes.STRING,
-    },
-    bio: {
+    caption: {
       type: DataTypes.TEXT,
     },
   },
@@ -34,4 +26,4 @@ const User = sequelize.define(
   }
 );
 
-export default User;
+export default Photo;

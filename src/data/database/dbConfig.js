@@ -1,19 +1,43 @@
-// src/data/database/dbConfig.js
 import { Sequelize } from "sequelize";
 import { config } from "../../config/config.js";
+import { readdirSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath, pathToFileURL } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const sequelize = new Sequelize(config.databaseURL, {
   dialect: "postgres",
 });
 
+const modelsPath = join(__dirname, "../models");
+const modelFiles = readdirSync(modelsPath).filter((file) =>
+  file.endsWith(".js")
+);
+
+const importModels = async () => {
+  for (const file of modelFiles) {
+    const modelPath = pathToFileURL(join(modelsPath, file)).href;
+    const model = await import(modelPath);
+    sequelize[model.default.name] = model.default;
+  }
+};
+
+const setupAssociations = async () => {
+  await import(pathToFileURL(join(__dirname, "./associations.js")).href);
+};
+
 export const connectDB = async () => {
   try {
     await sequelize.authenticate();
     console.log("Database connected");
-    await sequelize.sync({ force: false }); //force false will create the tables only if they do not exist.
+    await importModels(); // Import models before setting up associations
+    await setupAssociations(); // Set up associations
+    await sequelize.sync({ force: false });
     console.log("Database synchronized");
   } catch (error) {
-    console.error("Database connection error", error);
+    console.error("Database connection error:", error);
     process.exit(1);
   }
 };
