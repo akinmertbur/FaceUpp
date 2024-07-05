@@ -5,4 +5,5 @@ dotenv.config();
 export const config = {
   databaseURL: process.env.DATABASE_URL,
   port: process.env.PORT || 3000,
+  sessionSecret: process.env.SESSION_SECRET,
 };

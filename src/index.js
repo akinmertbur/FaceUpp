@@ -20,8 +20,5 @@ configureRoutes(app);
 // Database connection
 connectDB();
 
-// Define home route
-app.get("/", (req, res) => res.render("index"));
-
 // Start server
 app.listen(port, () => log(`Server running on port ${port}`));

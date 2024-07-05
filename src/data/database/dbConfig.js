@@ -42,4 +42,21 @@ export const connectDB = async () => {
   }
 };
 
+export const db = {
+  query: async (text, params) => {
+    const result = await sequelize.query(text, {
+      bind: params,
+      type: sequelize.QueryTypes.SELECT,
+    });
+    return result;
+  },
+  insert: async (text, params) => {
+    const result = await sequelize.query(text, {
+      bind: params,
+      type: sequelize.QueryTypes.INSERT,
+    });
+    return result;
+  },
+};
+
 export default sequelize;
