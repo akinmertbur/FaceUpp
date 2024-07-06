@@ -47,11 +47,11 @@ passport.deserializeUser(async (id, done) => {
 });
 
 const registerUser = async (req, res) => {
-  const { username, password } = req.body;
+  const { email, username, password } = req.body;
   try {
     const checkResult = await db.query(
       'SELECT * FROM "Users" WHERE email = $1',
-      [username]
+      [email]
     );
     if (checkResult && checkResult.length > 0) {
       res.redirect("/login");
@@ -62,7 +62,7 @@ const registerUser = async (req, res) => {
         } else {
           const result = await db.insert(
             'INSERT INTO "Users" (username, email, password) VALUES ($1, $2, $3) RETURNING *',
-            [username, username, hash]
+            [username, email, hash]
           );
           console.log("Insert query result:", result); // Debugging line
           if (result && result.length > 0) {
@@ -71,13 +71,11 @@ const registerUser = async (req, res) => {
             req.login(user, (err) => {
               if (err) {
                 console.error("Error logging in user:", err);
-                res
-                  .status(500)
-                  .json({
-                    message: "Failed to log in user after registration",
-                  });
+                res.status(500).json({
+                  message: "Failed to log in user after registration",
+                });
               } else {
-                res.redirect("/");
+                res.redirect("/home");
               }
             });
           } else {
@@ -94,7 +92,7 @@ const registerUser = async (req, res) => {
 };
 
 const loginUser = passport.authenticate("local", {
-  successRedirect: "/",
+  successRedirect: "/home",
   failureRedirect: "/login",
 });
 

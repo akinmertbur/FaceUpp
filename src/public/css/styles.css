@@ -1,0 +1,15 @@
+body {
+  background-color: #e8ecef;
+}
+
+.centered {
+  padding-top: 200px;
+  text-align: center;
+}
+
+.login-register-msg {
+  margin-top: 16px;
+  margin-bottom: 0px;
+  font-weight: bolder;
+  color: rgb(45, 44, 44);
+}

@@ -4,7 +4,11 @@ import express from "express";
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  res.render("index.ejs");
+  if (req.isAuthenticated()) {
+    res.redirect("/home");
+  } else {
+    res.render("index.ejs");
+  }
 });
 
 router.get("/login", (req, res) => {
@@ -13,6 +17,14 @@ router.get("/login", (req, res) => {
 
 router.get("/register", (req, res) => {
   res.render("register.ejs");
+});
+
+router.get("/home", (req, res) => {
+  if (req.isAuthenticated()) {
+    res.render("home.ejs");
+  } else {
+    res.redirect("/login");
+  }
 });
 
 export default router;
