@@ -1,0 +1,25 @@
+<%- include('partials/header') %>
+
+
+<div class="jumbotron centered">
+  <div class="container">
+    <form action="/api/photos" method="POST">
+        <% if(locals.userId) { %>
+            <div class="form-group">
+                <input hidden type="userId" class="form-control" name="userId" value= <%= userId %>>
+            </div>
+        <% } %>
+        <div class="form-group">
+          <label for="photoUrl">Photo URL</label>
+          <input type="photoUrl" class="form-control" name="photoUrl">
+        </div>
+        <div class="form-group">
+          <label for="caption">Caption</label>
+          <input type="caption" class="form-control" name="caption">
+        </div>
+        <button type="submit" class="btn btn-dark">Add</button>
+      </form>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

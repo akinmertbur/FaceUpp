@@ -4,9 +4,12 @@
 <div class="jumbotron centered">
   <div class="container">
     <i class="fa-solid fa-star fa-6x"></i>
-    <h1 class="display-3">Welcome to FaceUpp</h1>
+    <% if(locals.username) { %>
+      <h1 class="display-3">Welcome to FaceUpp <br> <%= username %></h1>
+    <% } %>
     <p class="lead">Don't keep your photos, share them with your friends!</p>
     <hr>
+    <a href="/addContent">Add Content</a>
     <a href="/api/auth/logout">Logout</a>
   </div>
 </div>

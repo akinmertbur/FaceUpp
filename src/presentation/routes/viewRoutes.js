@@ -21,7 +21,17 @@ router.get("/register", (req, res) => {
 
 router.get("/home", (req, res) => {
   if (req.isAuthenticated()) {
-    res.render("home.ejs");
+    const { username } = req.user;
+    res.render("home.ejs", { username });
+  } else {
+    res.redirect("/login");
+  }
+});
+
+router.get("/addContent", (req, res) => {
+  if (req.isAuthenticated()) {
+    const { id } = req.user;
+    res.render("addContent.ejs", { userId: id });
   } else {
     res.redirect("/login");
   }
