@@ -1,0 +1,15 @@
+<%- include('partials/header') %>
+<h1>User Profile</h1>
+  <% if (photos && photos.length > 0) { %>
+    <div class="photo-gallery">
+      <% photos.forEach(photo => { %>
+        <div class="photo-item">
+          <img src="<%= photo.localUrl %>" alt="Photo">
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <p>No photos available.</p>
+  <% } %>
+  <a href="/">Home</a>
+<%- include('partials/footer') %>

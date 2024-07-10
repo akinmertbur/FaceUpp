@@ -5,4 +5,7 @@ const addPhoto = async (photoData) => {
   return await Photo.create(photoData);
 };
 
-export { addPhoto };
+const getPhotos = async (userId) => {
+  return await Photo.findAll({ where: { userId: userId } });
+};
+export { addPhoto, getPhotos };

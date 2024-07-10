@@ -1,10 +1,17 @@
-// src/presentation/controllers/photoController.js
 import { v4 as uuidv4 } from "uuid";
 import {
   insertPhoto,
   uploadPhotoToS3,
+  retrievePhotos,
+  downloadPhoto,
 } from "../../business/services/photoService.js";
 import { log, error } from "../../utils/logger.js";
+import { fileURLToPath } from "url";
+import path from "path";
+import fs from "fs";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const addPhoto = async (req, res) => {
   try {
@@ -36,4 +43,40 @@ const addPhoto = async (req, res) => {
   }
 };
 
-export { addPhoto };
+const getPhotos = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const photos = await retrievePhotos(id);
+
+    const downloadPromises = photos.map((photo) => {
+      const localPath = path.join(__dirname, "../../../src/public/images");
+      return downloadPhoto(photo.photoUrl, localPath).then((localFilePath) => {
+        return {
+          ...photo,
+          localUrl: `/images/${path.basename(localFilePath)}`,
+        };
+      });
+    });
+
+    const localPhotos = await Promise.all(downloadPromises);
+
+    res.render("profile.ejs", { photos: localPhotos });
+
+    // Schedule deletion of the images directory after rendering
+    setTimeout(() => {
+      const localPath = path.join(__dirname, "../../../src/public/images");
+      fs.rmdir(localPath, { recursive: true }, (err) => {
+        if (err) {
+          error(`Failed to delete images directory: ${err.message}`);
+        } else {
+          log("Images directory deleted successfully");
+        }
+      });
+    }, 5000); // Adjust the delay as needed
+  } catch (err) {
+    error(`Failed to retrieve photos: ${err.message}`);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export { addPhoto, getPhotos };

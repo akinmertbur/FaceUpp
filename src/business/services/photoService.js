@@ -1,20 +1,24 @@
-// src/business/services/photoService.js
-import { addPhoto } from "../../data/repositories/photoRepository.js";
-import dotenv from "dotenv";
+import fs from "fs";
+import path from "path";
 import AWS from "aws-sdk";
+import {
+  addPhoto,
+  getPhotos,
+} from "../../data/repositories/photoRepository.js";
+import dotenv from "dotenv";
 import { log, error } from "../../utils/logger.js";
 
 dotenv.config();
-
-const insertPhoto = async (photoData) => {
-  return await addPhoto(photoData);
-};
 
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY,
   secretAccessKey: process.env.AWS_SECRET_KEY,
   region: process.env.AWS_REGION,
 });
+
+const insertPhoto = async (photoData) => {
+  return await addPhoto(photoData);
+};
 
 const uploadPhotoToS3 = async (file, userId, photoId) => {
   const key = `photos/${userId}-${photoId}-${file.originalname}`;
@@ -35,4 +39,37 @@ const uploadPhotoToS3 = async (file, userId, photoId) => {
   }
 };
 
-export { insertPhoto, uploadPhotoToS3 };
+const ensureDirectoryExistence = (dir) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+};
+
+const downloadPhoto = async (key, localPath) => {
+  ensureDirectoryExistence(localPath); // Ensure the directory exists
+
+  const params = { Bucket: process.env.S3_BUCKET, Key: key };
+  const filePath = path.resolve(localPath, key.split("/").pop());
+
+  const file = fs.createWriteStream(filePath);
+
+  return new Promise((resolve, reject) => {
+    s3.getObject(params)
+      .createReadStream()
+      .pipe(file)
+      .on("finish", () => {
+        log(`File downloaded successfully to ${filePath}`);
+        resolve(filePath);
+      })
+      .on("error", (err) => {
+        error("Error downloading file:", err);
+        reject(err);
+      });
+  });
+};
+
+const retrievePhotos = async (userId) => {
+  return await getPhotos(userId);
+};
+
+export { insertPhoto, uploadPhotoToS3, retrievePhotos, downloadPhoto };
