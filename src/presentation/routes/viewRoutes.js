@@ -1,4 +1,3 @@
-// src/presentation/routes/viewRoutes.js
 import express from "express";
 
 const router = express.Router();
@@ -21,8 +20,9 @@ router.get("/register", (req, res) => {
 
 router.get("/home", (req, res) => {
   if (req.isAuthenticated()) {
+    const successMessage = req.query.success || "";
     const { username } = req.user;
-    res.render("home.ejs", { username });
+    res.render("home.ejs", { username, successMessage });
   } else {
     res.redirect("/login");
   }
@@ -30,8 +30,9 @@ router.get("/home", (req, res) => {
 
 router.get("/addContent", (req, res) => {
   if (req.isAuthenticated()) {
+    const errMsg = req.query.errmsg || "";
     const { id } = req.user;
-    res.render("addContent.ejs", { userId: id });
+    res.render("addContent.ejs", { userId: id, errMsg });
   } else {
     res.redirect("/login");
   }

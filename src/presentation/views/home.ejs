@@ -11,6 +11,11 @@
     <hr>
     <a href="/addContent">Add Content</a>
     <a href="/api/auth/logout">Logout</a>
+    <% if (locals.successMessage) { %>
+      <div class="alert alert-success">
+        <%= successMessage %>
+      </div>
+    <% } %>
   </div>
 </div>
 
