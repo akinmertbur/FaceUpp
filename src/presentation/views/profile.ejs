@@ -1,15 +1,46 @@
 <%- include('partials/header') %>
-<h1>User Profile</h1>
-  <% if (photos && photos.length > 0) { %>
-    <div class="photo-gallery">
-      <% photos.forEach(photo => { %>
-        <div class="photo-item">
-          <img src="<%= photo.localUrl %>" alt="Photo">
-        </div>
-      <% }) %>
-    </div>
-  <% } else { %>
-    <p>No photos available.</p>
-  <% } %>
-  <a href="/">Home</a>
+<% if (locals.user) { %>
+  <h1><%= user.username %></h1>
+  <p><%= user.bio %></p>
+  <button id="editBioButton" onclick="toggleHide()">Edit Bio</button>
+<% } %>
+
+<form action="/api/users/editBio" method="POST">
+  <div class="form-group">
+    <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
+    <input id="editBioInputField" type="text" class="form-control hide" name="bioText">
+  </div>
+  <button id="saveBioButton" type="submit" class="btn btn-dark hide">Save</button>
+</form>
+
+<% if (photos && photos.length > 0) { %>
+  <div class="photo-gallery">
+    <% photos.forEach(photo => { %>
+      <div class="photo-item">
+        <img src="<%= photo.localUrl %>" alt="Photo">
+      </div>
+    <% }) %>
+  </div>
+<% } else { %>
+  <p>No photos available.</p>
+<% } %>
+<a href="/">Home</a>
+
+<script>
+  function toggleHide() {
+    const editBioInputField = document.getElementById('editBioInputField');
+    const saveBioButton = document.getElementById('saveBioButton');
+    const editBioButton = document.getElementById('editBioButton');
+
+    if (editBioInputField.classList.contains('hide')) {
+      editBioInputField.classList.remove('hide');
+      saveBioButton.classList.remove('hide');
+      editBioButton.classList.add('hide');
+    } else {
+      editBioInputField.classList.add('hide');
+      saveBioButton.classList.add('hide');
+      editBioButton.classList.remove('hide');
+    }
+  }
+</script>
 <%- include('partials/footer') %>

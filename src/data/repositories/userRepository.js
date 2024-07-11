@@ -1,8 +1,11 @@
-// src/data/repositories/userRepository.js
 import User from "../models/userModel.js";
 
 const createUser = async (userData) => {
   return await User.create(userData);
 };
 
-export { createUser };
+const editBio = async (userId, bioText) => {
+  return await User.update({ bio: bioText }, { where: { id: userId } });
+};
+
+export { createUser, editBio };

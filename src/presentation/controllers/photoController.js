@@ -45,8 +45,8 @@ const addPhoto = async (req, res) => {
 
 const getPhotos = async (req, res) => {
   try {
-    const { id } = req.user;
-    const photos = await retrievePhotos(id);
+    const user = req.user;
+    const photos = await retrievePhotos(user.id);
 
     const downloadPromises = photos.map((photo) => {
       const localPath = path.join(__dirname, "../../../src/public/images");
@@ -60,7 +60,7 @@ const getPhotos = async (req, res) => {
 
     const localPhotos = await Promise.all(downloadPromises);
 
-    res.render("profile.ejs", { photos: localPhotos });
+    res.render("profile.ejs", { photos: localPhotos, user });
 
     // Schedule deletion of the images directory after rendering
     setTimeout(() => {

@@ -1,8 +1,11 @@
-// src/business/services/userService.js
-import { createUser } from "../../data/repositories/userRepository.js";
+import { createUser, editBio } from "../../data/repositories/userRepository.js";
 
 const addUser = async (userData) => {
   return await createUser(userData);
 };
 
-export { addUser };
+const changeBio = async (userId, bioText) => {
+  return await editBio(userId, bioText);
+};
+
+export { addUser, changeBio };
