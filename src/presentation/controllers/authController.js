@@ -105,4 +105,26 @@ const logoutUser = (req, res) => {
   });
 };
 
-export { registerUser, loginUser, logoutUser };
+const editPassword = async (req, res) => {
+  const { id } = req.user;
+  const { password } = req.body;
+  try {
+    bcrypt.hash(password, saltRounds, async (err, hash) => {
+      if (err) {
+        console.error("Error hashing password:", err);
+      } else {
+        const result = await db.query(
+          'UPDATE "Users" SET password = $1 WHERE id = $2 RETURNING *',
+          [hash, id]
+        );
+        console.log("Insert query result:", result); // Debugging line
+        res.redirect("/api/photos/getphotos");
+      }
+    });
+  } catch (err) {
+    console.error("Error changing password:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export { registerUser, loginUser, logoutUser, editPassword };

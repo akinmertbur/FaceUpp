@@ -2,7 +2,10 @@
 <% if (locals.user) { %>
   <h1><%= user.username %></h1>
   <p><%= user.bio %></p>
-  <button id="editBioButton" onclick="toggleHide()">Edit Bio</button>
+  <button id="editBioButton" onclick="toggleHideBio()">Edit Bio</button>
+  <button id="editUsernameButton" onclick="toggleHideUsername()">Edit Username</button>
+  <button id="editEmailButton" onclick="toggleHideEmail()">Edit Email</button>
+  <button id="editPasswordButton" onclick="toggleHidePassword()">Edit Password</button>
 <% } %>
 
 <form action="/api/users/editBio" method="POST">
@@ -11,6 +14,29 @@
     <input id="editBioInputField" type="text" class="form-control hide" name="bioText">
   </div>
   <button id="saveBioButton" type="submit" class="btn btn-dark hide">Save</button>
+</form>
+
+<form action="/api/users/editUsername" method="POST">
+  <div class="form-group">
+    <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
+    <input id="editUsernameInputField" type="text" class="form-control hide" name="username">
+  </div>
+  <button id="saveUsernameButton" type="submit" class="btn btn-dark hide">Save</button>
+</form>
+
+<form action="/api/users/editEmail" method="POST">
+  <div class="form-group">
+    <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
+    <input id="editEmailInputField" type="text" class="form-control hide" name="email">
+  </div>
+  <button id="saveEmailButton" type="submit" class="btn btn-dark hide">Save</button>
+</form>
+
+<form action="/api/auth/editPassword" method="POST">
+  <div class="form-group">
+    <input id="editPasswordInputField" type="password" class="form-control hide" name="password">
+  </div>
+  <button id="savePasswordButton" type="submit" class="btn btn-dark hide">Save</button>
 </form>
 
 <% if (photos && photos.length > 0) { %>
@@ -27,7 +53,7 @@
 <a href="/">Home</a>
 
 <script>
-  function toggleHide() {
+  function toggleHideBio() {
     const editBioInputField = document.getElementById('editBioInputField');
     const saveBioButton = document.getElementById('saveBioButton');
     const editBioButton = document.getElementById('editBioButton');
@@ -40,6 +66,51 @@
       editBioInputField.classList.add('hide');
       saveBioButton.classList.add('hide');
       editBioButton.classList.remove('hide');
+    }
+  }
+  function toggleHideUsername() {
+    const editUsernameInputField = document.getElementById('editUsernameInputField');
+    const saveUsernameButton = document.getElementById('saveUsernameButton');
+    const editUsernameButton = document.getElementById('editUsernameButton');
+
+    if (editUsernameInputField.classList.contains('hide')) {
+      editUsernameInputField.classList.remove('hide');
+      saveUsernameButton.classList.remove('hide');
+      editUsernameButton.classList.add('hide');
+    } else {
+      editUsernameInputField.classList.add('hide');
+      saveUsernameButton.classList.add('hide');
+      editUsernameButton.classList.remove('hide');
+    }
+  }
+  function toggleHideEmail() {
+    const editEmailInputField = document.getElementById('editEmailInputField');
+    const saveEmailButton = document.getElementById('saveEmailButton');
+    const editEmailButton = document.getElementById('editEmailButton');
+
+    if (editEmailInputField.classList.contains('hide')) {
+      editEmailInputField.classList.remove('hide');
+      saveEmailButton.classList.remove('hide');
+      editEmailButton.classList.add('hide');
+    } else {
+      editEmailInputField.classList.add('hide');
+      saveEmailButton.classList.add('hide');
+      editEmailButton.classList.remove('hide');
+    }
+  }
+  function toggleHidePassword() {
+    const editPasswordInputField = document.getElementById('editPasswordInputField');
+    const savePasswordButton = document.getElementById('savePasswordButton');
+    const editPasswordButton = document.getElementById('editPasswordButton');
+
+    if (editPasswordInputField.classList.contains('hide')) {
+      editPasswordInputField.classList.remove('hide');
+      savePasswordButton.classList.remove('hide');
+      editPasswordButton.classList.add('hide');
+    } else {
+      editPasswordInputField.classList.add('hide');
+      savePasswordButton.classList.add('hide');
+      editPasswordButton.classList.remove('hide');
     }
   }
 </script>
