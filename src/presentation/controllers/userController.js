@@ -18,8 +18,8 @@ const createUser = async (req, res) => {
 };
 
 const editBio = async (req, res) => {
+  const { userId, bioText } = req.body;
   try {
-    const { userId, bioText } = req.body;
     const user = await changeBio(userId, bioText);
     log(`Bio edited for the user ID: ${userId}`);
     res.status(201).redirect("/api/photos/getPhotos");
@@ -30,8 +30,8 @@ const editBio = async (req, res) => {
 };
 
 const editUsername = async (req, res) => {
+  const { userId, username } = req.body;
   try {
-    const { userId, username } = req.body;
     const user = await changeUsername(userId, username);
     log(`Username edited for the user ID: ${userId}`);
     res.status(201).redirect("/api/photos/getPhotos");
@@ -42,8 +42,8 @@ const editUsername = async (req, res) => {
 };
 
 const editEmail = async (req, res) => {
+  const { userId, email } = req.body;
   try {
-    const { userId, email } = req.body;
     const user = await changeEmail(userId, email);
     log(`Email edited for the user ID: ${userId}`);
     res.status(201).redirect("/api/photos/getphotos");

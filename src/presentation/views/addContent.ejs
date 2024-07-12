@@ -7,7 +7,7 @@
         <%= errMsg %>
       </div>
     <% } %>
-    <form action="/api/photos" method="POST" enctype="multipart/form-data">
+    <form id="addContentForm" action="/api/photos" method="POST" enctype="multipart/form-data" onsubmit="return validateAddContentForm()">
       <% if(locals.userId) { %>
         <div class="form-group">
           <input hidden type="text" class="form-control" name="userId" value="<%= userId %>">
@@ -15,15 +15,48 @@
       <% } %>
       <div class="form-group">
         <label for="photo">Photo</label>
-        <input type="file" class="form-control" name="photo" accept="image/*">
+        <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+        <div class="invalid-feedback" id="photoError"></div>
       </div>
       <div class="form-group">
         <label for="caption">Caption</label>
-        <input type="text" class="form-control" name="caption">
+        <input type="text" class="form-control" id="caption" name="caption">
+        <div class="invalid-feedback" id="captionError"></div>
       </div>
       <button type="submit" class="btn btn-dark">Add</button>
     </form>
   </div>
 </div>
+
+<script>
+  function validateAddContentForm() {
+    let isValid = true;
+
+    const photo = document.getElementById('photo').files[0];
+    const caption = document.getElementById('caption').value.trim();
+
+    // Photo validation
+    if (!photo) {
+      document.getElementById('photoError').innerText = "Photo is required";
+      document.getElementById('photo').classList.add('is-invalid');
+      isValid = false;
+    } else {
+      document.getElementById('photoError').innerText = "";
+      document.getElementById('photo').classList.remove('is-invalid');
+    }
+
+    // Caption validation
+    if (caption === "") {
+      document.getElementById('captionError').innerText = "Caption cannot be empty";
+      document.getElementById('caption').classList.add('is-invalid');
+      isValid = false;
+    } else {
+      document.getElementById('captionError').innerText = "";
+      document.getElementById('caption').classList.remove('is-invalid');
+    }
+
+    return isValid;
+  }
+</script>
 
 <%- include('partials/footer') %>

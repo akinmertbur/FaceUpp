@@ -16,4 +16,30 @@ const editEmail = async (userId, email) => {
   return await User.update({ email: email }, { where: { id: userId } });
 };
 
-export { createUser, editBio, editUsername, editEmail };
+// Get user by email
+const getUserByEmail = async (email) => {
+  return await User.findOne({ where: { email } });
+};
+
+// Get user by ID
+const getUserById = async (id) => {
+  return await User.findByPk(id);
+};
+
+// Update user's password
+const updatePassword = async (userId, newPassword) => {
+  return await User.update(
+    { password: newPassword },
+    { where: { id: userId } }
+  );
+};
+
+export {
+  createUser,
+  editBio,
+  editUsername,
+  editEmail,
+  getUserByEmail,
+  getUserById,
+  updatePassword,
+};

@@ -5,12 +5,18 @@ import {
   editUsername,
   editEmail,
 } from "../controllers/userController.js";
+import {
+  validateCreateUser,
+  validateEditBio,
+  validateEditUsername,
+  validateEditEmail,
+} from "../../middleware/validationMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", createUser);
-router.post("/editBio", editBio);
-router.post("/editUsername", editUsername);
-router.post("/editEmail", editEmail);
+router.post("/", validateCreateUser, createUser);
+router.post("/editBio", validateEditBio, editBio);
+router.post("/editUsername", validateEditUsername, editUsername);
+router.post("/editEmail", validateEditEmail, editEmail);
 
 export default router;

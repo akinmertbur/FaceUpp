@@ -8,33 +8,33 @@
   <button id="editPasswordButton" onclick="toggleHidePassword()">Edit Password</button>
 <% } %>
 
-<form action="/api/users/editBio" method="POST">
+<form action="/api/users/editBio" method="POST" onsubmit="return validateBioForm()">
   <div class="form-group">
     <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
-    <input id="editBioInputField" type="text" class="form-control hide" name="bioText">
+    <input id="editBioInputField" type="text" class="form-control hide" name="bioText" required>
   </div>
   <button id="saveBioButton" type="submit" class="btn btn-dark hide">Save</button>
 </form>
 
-<form action="/api/users/editUsername" method="POST">
+<form action="/api/users/editUsername" method="POST" onsubmit="return validateUsernameForm()">
   <div class="form-group">
     <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
-    <input id="editUsernameInputField" type="text" class="form-control hide" name="username">
+    <input id="editUsernameInputField" type="text" class="form-control hide" name="username" required>
   </div>
   <button id="saveUsernameButton" type="submit" class="btn btn-dark hide">Save</button>
 </form>
 
-<form action="/api/users/editEmail" method="POST">
+<form action="/api/users/editEmail" method="POST" onsubmit="return validateEmailForm()">
   <div class="form-group">
     <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
-    <input id="editEmailInputField" type="text" class="form-control hide" name="email">
+    <input id="editEmailInputField" type="email" class="form-control hide" name="email" required>
   </div>
   <button id="saveEmailButton" type="submit" class="btn btn-dark hide">Save</button>
 </form>
 
-<form action="/api/auth/editPassword" method="POST">
+<form action="/api/auth/editPassword" method="POST" onsubmit="return validatePasswordForm()">
   <div class="form-group">
-    <input id="editPasswordInputField" type="password" class="form-control hide" name="password">
+    <input id="editPasswordInputField" type="password" class="form-control hide" name="password" required>
   </div>
   <button id="savePasswordButton" type="submit" class="btn btn-dark hide">Save</button>
 </form>
@@ -68,6 +68,7 @@
       editBioButton.classList.remove('hide');
     }
   }
+  
   function toggleHideUsername() {
     const editUsernameInputField = document.getElementById('editUsernameInputField');
     const saveUsernameButton = document.getElementById('saveUsernameButton');
@@ -83,6 +84,7 @@
       editUsernameButton.classList.remove('hide');
     }
   }
+  
   function toggleHideEmail() {
     const editEmailInputField = document.getElementById('editEmailInputField');
     const saveEmailButton = document.getElementById('saveEmailButton');
@@ -98,6 +100,7 @@
       editEmailButton.classList.remove('hide');
     }
   }
+  
   function toggleHidePassword() {
     const editPasswordInputField = document.getElementById('editPasswordInputField');
     const savePasswordButton = document.getElementById('savePasswordButton');
@@ -112,6 +115,55 @@
       savePasswordButton.classList.add('hide');
       editPasswordButton.classList.remove('hide');
     }
+  }
+
+  function validateBioForm() {
+    const bioText = document.getElementById('editBioInputField').value;
+    if (bioText.trim() === '') {
+      alert('Bio cannot be empty');
+      return false;
+    }
+    return true;
+  }
+
+  function validateUsernameForm() {
+    const username = document.getElementById('editUsernameInputField').value;
+    if (username.trim() === '') {
+      alert('Username cannot be empty');
+      return false;
+    }
+    return true;
+  }
+
+  function validateEmailForm() {
+    const email = document.getElementById('editEmailInputField').value;
+    if (email.trim() === '') {
+      alert('Email cannot be empty');
+      return false;
+    }
+    if (!validateEmail(email)) {
+      alert('Invalid email format');
+      return false;
+    }
+    return true;
+  }
+
+  function validatePasswordForm() {
+    const password = document.getElementById('editPasswordInputField').value;
+    if (password.trim() === '') {
+      alert('Password cannot be empty');
+      return false;
+    }
+    if (password.length < 8) {
+      alert('Password must be at least 8 characters long');
+      return false;
+    }
+    return true;
+  }
+
+  function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
   }
 </script>
 <%- include('partials/footer') %>

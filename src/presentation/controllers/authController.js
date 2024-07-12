@@ -2,129 +2,81 @@
 import bcrypt from "bcrypt";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { db } from "../../data/database/dbConfig.js";
+import {
+  registerUser,
+  findUserByEmail,
+  findUserById,
+  updateUserPassword,
+} from "../../business/services/authService.js";
+import { log, error } from "../../utils/logger.js";
 
 const saltRounds = 10;
 
 passport.use(
   new LocalStrategy(async (username, password, done) => {
     try {
-      const result = await db.query('SELECT * FROM "Users" WHERE email = $1', [
-        username,
-      ]);
-      if (result && result.length > 0) {
-        const user = result[0];
-        const storedHashedPassword = user.password;
-        bcrypt.compare(password, storedHashedPassword, (err, valid) => {
-          if (err) return done(err);
-          if (valid) return done(null, user);
-          return done(null, false);
-        });
-      } else {
-        return done(null, false, { message: "User not found" });
-      }
+      const user = await findUserByEmail(username);
+      if (!user) return done(null, false, { message: "User not found" });
+
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      return done(null, isValidPassword ? user : false);
     } catch (err) {
       return done(err);
     }
   })
 );
 
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
+passport.serializeUser((user, done) => done(null, user.id));
 
 passport.deserializeUser(async (id, done) => {
   try {
-    const result = await db.query('SELECT * FROM "Users" WHERE id = $1', [id]);
-    if (result && result.length > 0) {
-      done(null, result[0]);
-    } else {
-      done(new Error("User not found"));
-    }
+    const user = await findUserById(id);
+    done(null, user || new Error("User not found"));
   } catch (err) {
     done(err);
   }
 });
 
-const registerUser = async (req, res) => {
+const registerUserController = async (req, res) => {
   const { email, username, password } = req.body;
   try {
-    const checkResult = await db.query(
-      'SELECT * FROM "Users" WHERE email = $1',
-      [email]
-    );
-    if (checkResult && checkResult.length > 0) {
-      res.redirect("/login");
-    } else {
-      bcrypt.hash(password, saltRounds, async (err, hash) => {
-        if (err) {
-          console.error("Error hashing password:", err);
-        } else {
-          const result = await db.insert(
-            'INSERT INTO "Users" (username, email, password) VALUES ($1, $2, $3) RETURNING *',
-            [username, email, hash]
-          );
-          console.log("Insert query result:", result); // Debugging line
-          if (result && result.length > 0) {
-            const user = result[0][0]; // Access the user object correctly
-            console.log("Logging in user:", user); // Debugging line
-            req.login(user, (err) => {
-              if (err) {
-                console.error("Error logging in user:", err);
-                res.status(500).json({
-                  message: "Failed to log in user after registration",
-                });
-              } else {
-                res.redirect("/home");
-              }
-            });
-          } else {
-            console.error("Insert result is empty");
-            res.status(500).json({ message: "Failed to register user" });
-          }
-        }
-      });
-    }
+    await registerUser(email, username, password);
+    res.redirect("/login");
   } catch (err) {
-    console.error("Error registering user:", err);
+    error(`Error registering user: ${err.message}`);
     res.status(500).json({ message: err.message });
   }
 };
 
-const loginUser = passport.authenticate("local", {
+const loginUserController = passport.authenticate("local", {
   successRedirect: "/home",
   failureRedirect: "/login",
 });
 
-const logoutUser = (req, res) => {
+const logoutUserController = (req, res) => {
   req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
+    if (err) return next(err);
     res.redirect("/");
   });
 };
 
-const editPassword = async (req, res) => {
-  const { id } = req.user;
+const editPasswordController = async (req, res) => {
   const { password } = req.body;
+  const userId = req.user.id;
+
   try {
-    bcrypt.hash(password, saltRounds, async (err, hash) => {
-      if (err) {
-        console.error("Error hashing password:", err);
-      } else {
-        const result = await db.query(
-          'UPDATE "Users" SET password = $1 WHERE id = $2 RETURNING *',
-          [hash, id]
-        );
-        console.log("Insert query result:", result); // Debugging line
-        res.redirect("/api/photos/getphotos");
-      }
-    });
+    const hash = await bcrypt.hash(password, saltRounds);
+    await updateUserPassword(userId, hash);
+    res.redirect("/api/photos/getphotos");
   } catch (err) {
-    console.error("Error changing password:", err);
+    error(`Error changing password: ${err.message}`);
     res.status(500).json({ message: err.message });
   }
 };
 
-export { registerUser, loginUser, logoutUser, editPassword };
+export {
+  registerUserController,
+  loginUserController,
+  logoutUserController,
+  editPasswordController,
+};
