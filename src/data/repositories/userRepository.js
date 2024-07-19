@@ -34,8 +34,8 @@ const updatePassword = async (userId, newPassword) => {
   );
 };
 
-// Add profile picture
-const addProfilePicture = async (userId, photoUrl) => {
+// Edit profile picture
+const editProfilePicture = async (userId, photoUrl) => {
   return await User.update(
     { profilePicture: photoUrl },
     { where: { id: userId } }
@@ -54,6 +54,6 @@ export {
   getUserByEmail,
   getUserById,
   updatePassword,
-  addProfilePicture,
+  editProfilePicture,
   getProfilePicture,
 };

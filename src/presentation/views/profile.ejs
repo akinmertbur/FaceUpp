@@ -47,7 +47,7 @@
   <button id="savePasswordButton" type="submit" class="btn btn-dark hide">Save</button>
 </form>
 
-<form action="/api/users/addProfilePicture" method="POST" enctype="multipart/form-data" onsubmit="return validateAddProfilePictureForm()">
+<form action="/api/users/editProfilePicture" method="POST" enctype="multipart/form-data" onsubmit="return validateAddProfilePictureForm()">
   <div class="form-group">
     <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
     <input type="file" class="form-control hide" id="photo" name="photo" accept="image/*">

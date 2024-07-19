@@ -4,7 +4,7 @@ import {
   editBio,
   editUsername,
   editEmail,
-  addProfilePicture,
+  editProfilePicture,
 } from "../controllers/userController.js";
 import {
   validateCreateUser,
@@ -25,10 +25,10 @@ router.post("/editBio", validateEditBio, editBio);
 router.post("/editUsername", validateEditUsername, editUsername);
 router.post("/editEmail", validateEditEmail, editEmail);
 router.post(
-  "/addProfilePicture",
+  "/editProfilePicture",
   upload.single("photo"),
   validateProfilePicture,
-  addProfilePicture
+  editProfilePicture
 );
 
 export default router;

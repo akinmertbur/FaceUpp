@@ -4,7 +4,7 @@ import {
   editUsername,
   editEmail,
   getUserByEmail,
-  addProfilePicture,
+  editProfilePicture,
   getProfilePicture,
 } from "../../data/repositories/userRepository.js";
 
@@ -75,8 +75,8 @@ const validateEmail = (email) => {
   return re.test(String(email).toLowerCase());
 };
 
-const insertProfilePicture = async (userId, photoUrl) => {
-  return await addProfilePicture(userId, photoUrl);
+const changeProfilePicture = async (userId, photoUrl) => {
+  return await editProfilePicture(userId, photoUrl);
 };
 
 const retrieveProfilePicture = async (userId) => {
@@ -89,6 +89,6 @@ export {
   changeBio,
   changeUsername,
   changeEmail,
-  insertProfilePicture,
+  changeProfilePicture,
   retrieveProfilePicture,
 };

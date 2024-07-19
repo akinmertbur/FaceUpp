@@ -4,7 +4,7 @@ import {
   changeBio,
   changeUsername,
   changeEmail,
-  insertProfilePicture,
+  changeProfilePicture,
 } from "../../business/services/userService.js";
 import { uploadPhotoToS3 } from "../../business/services/photoService.js";
 import { log, error } from "../../utils/logger.js"; // Import the logger functions
@@ -56,7 +56,7 @@ const editEmail = async (req, res) => {
   }
 };
 
-const addProfilePicture = async (req, res) => {
+const editProfilePicture = async (req, res) => {
   try {
     const img = req.file;
     const userId = req.body.userId;
@@ -72,7 +72,7 @@ const addProfilePicture = async (req, res) => {
 
     const key = await uploadPhotoToS3(img, userId, photoId); // Upload photo to S3
 
-    const photo = await insertProfilePicture(userId, key);
+    const photo = await changeProfilePicture(userId, key);
     log(`Profile picture added with ID: ${photoId}`); // Log a message when photo is created
     res.status(201).redirect("/api/photos/getphotos");
   } catch (err) {
@@ -81,4 +81,4 @@ const addProfilePicture = async (req, res) => {
   }
 };
 
-export { createUser, editBio, editUsername, editEmail, addProfilePicture };
+export { createUser, editBio, editUsername, editEmail, editProfilePicture };
