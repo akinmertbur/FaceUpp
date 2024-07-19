@@ -34,6 +34,18 @@ const updatePassword = async (userId, newPassword) => {
   );
 };
 
+// Add profile picture
+const addProfilePicture = async (userId, photoUrl) => {
+  return await User.update(
+    { profilePicture: photoUrl },
+    { where: { id: userId } }
+  );
+};
+
+const getProfilePicture = async (userId) => {
+  return await User.findOne({ where: { id: userId } });
+};
+
 export {
   createUser,
   editBio,
@@ -42,4 +54,6 @@ export {
   getUserByEmail,
   getUserById,
   updatePassword,
+  addProfilePicture,
+  getProfilePicture,
 };

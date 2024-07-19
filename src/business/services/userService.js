@@ -1,10 +1,11 @@
-// src/business/services/userService.js
 import {
   createUser,
   editBio,
   editUsername,
   editEmail,
   getUserByEmail,
+  addProfilePicture,
+  getProfilePicture,
 } from "../../data/repositories/userRepository.js";
 
 const addUser = async (userData) => {
@@ -74,4 +75,20 @@ const validateEmail = (email) => {
   return re.test(String(email).toLowerCase());
 };
 
-export { addUser, changeBio, changeUsername, changeEmail };
+const insertProfilePicture = async (userId, photoUrl) => {
+  return await addProfilePicture(userId, photoUrl);
+};
+
+const retrieveProfilePicture = async (userId) => {
+  const user = await getProfilePicture(userId);
+  return user ? user.profilePicture : null;
+};
+
+export {
+  addUser,
+  changeBio,
+  changeUsername,
+  changeEmail,
+  insertProfilePicture,
+  retrieveProfilePicture,
+};

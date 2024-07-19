@@ -64,3 +64,13 @@ export const validateEditPassword = [
     next();
   },
 ];
+
+export const validateProfilePicture = [
+  check("userId").notEmpty().withMessage("User ID is required"),
+  (req, res, next) => {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+    next();
+  },
+];

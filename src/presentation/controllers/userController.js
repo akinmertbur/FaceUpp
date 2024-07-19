@@ -1,9 +1,12 @@
+import { v4 as uuidv4 } from "uuid";
 import {
   addUser,
   changeBio,
   changeUsername,
   changeEmail,
+  insertProfilePicture,
 } from "../../business/services/userService.js";
+import { uploadPhotoToS3 } from "../../business/services/photoService.js";
 import { log, error } from "../../utils/logger.js"; // Import the logger functions
 
 const createUser = async (req, res) => {
@@ -53,4 +56,29 @@ const editEmail = async (req, res) => {
   }
 };
 
-export { createUser, editBio, editUsername, editEmail };
+const addProfilePicture = async (req, res) => {
+  try {
+    const img = req.file;
+    const userId = req.body.userId;
+    const photoId = uuidv4(); // Generate a unique photoId
+
+    if (!img) {
+      throw new Error("No file uploaded");
+    }
+
+    if (!userId) {
+      throw new Error("User ID is required");
+    }
+
+    const key = await uploadPhotoToS3(img, userId, photoId); // Upload photo to S3
+
+    const photo = await insertProfilePicture(userId, key);
+    log(`Profile picture added with ID: ${photoId}`); // Log a message when photo is created
+    res.status(201).redirect("/api/photos/getphotos");
+  } catch (err) {
+    error(`Failed to add profile picture: ${err.message}`); // Log an error message if there's an exception
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export { createUser, editBio, editUsername, editEmail, addProfilePicture };

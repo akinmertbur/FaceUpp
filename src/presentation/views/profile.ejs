@@ -1,11 +1,19 @@
 <%- include('partials/header') %>
 <% if (locals.user) { %>
+  <% if (profilePicture) { %>
+    <div class="photo-gallery">
+      <div class="photo-item">
+        <img src="<%= profilePicture %>" alt="Profile Picture">
+      </div>
+    </div>
+  <% } %>
   <h1><%= user.username %></h1>
   <p><%= user.bio %></p>
   <button id="editBioButton" onclick="toggleHideBio()">Edit Bio</button>
   <button id="editUsernameButton" onclick="toggleHideUsername()">Edit Username</button>
   <button id="editEmailButton" onclick="toggleHideEmail()">Edit Email</button>
   <button id="editPasswordButton" onclick="toggleHidePassword()">Edit Password</button>
+  <button id="addProfilePictureButton" onclick="toggleHideProfilePicture()">Add Profile Picture</button>
 <% } %>
 
 <form action="/api/users/editBio" method="POST" onsubmit="return validateBioForm()">
@@ -37,6 +45,15 @@
     <input id="editPasswordInputField" type="password" class="form-control hide" name="password" required>
   </div>
   <button id="savePasswordButton" type="submit" class="btn btn-dark hide">Save</button>
+</form>
+
+<form action="/api/users/addProfilePicture" method="POST" enctype="multipart/form-data" onsubmit="return validateAddProfilePictureForm()">
+  <div class="form-group">
+    <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
+    <input type="file" class="form-control hide" id="photo" name="photo" accept="image/*">
+    <div class="invalid-feedback" id="photoError"></div>
+  </div>
+  <button id="saveProfilePictureButton" type="submit" class="btn btn-dark hide">Save</button>
 </form>
 
 <% if (photos && photos.length > 0) { %>
@@ -117,6 +134,22 @@
     }
   }
 
+  function toggleHideProfilePicture() {
+    const addProfilePictureButton = document.getElementById('addProfilePictureButton');
+    const saveProfilePictureButton = document.getElementById('saveProfilePictureButton');
+    const photo = document.getElementById('photo');
+
+    if (photo.classList.contains('hide')) {
+      photo.classList.remove('hide');
+      saveProfilePictureButton.classList.remove('hide');
+      addProfilePictureButton.classList.add('hide');
+    } else {
+      photo.classList.add('hide');
+      saveProfilePictureButton.classList.add('hide');
+      addProfilePictureButton.classList.remove('hide');
+    }
+  }
+
   function validateBioForm() {
     const bioText = document.getElementById('editBioInputField').value;
     if (bioText.trim() === '') {
@@ -164,6 +197,23 @@
   function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
+  }
+
+  function validateAddProfilePictureForm() {
+    let isValid = true;
+
+    const photo = document.getElementById('photo').files[0];
+
+    // Photo validation
+    if (!photo) {
+      document.getElementById('photoError').innerText = "Photo is required";
+      document.getElementById('photo').classList.add('is-invalid');
+      isValid = false;
+    } else {
+      document.getElementById('photoError').innerText = "";
+      document.getElementById('photo').classList.remove('is-invalid');
+    }
+    return isValid;
   }
 </script>
 <%- include('partials/footer') %>
