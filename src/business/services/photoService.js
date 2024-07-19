@@ -1,4 +1,3 @@
-// src/business/services/photoService.js
 import fs from "fs";
 import path from "path";
 import AWS from "aws-sdk";
@@ -22,10 +21,26 @@ const s3 = new AWS.S3({
 });
 
 const insertPhoto = async (photoData) => {
+  if (!photoData.userId) {
+    throw new Error("User ID is required");
+  }
+
+  if (!photoData.photoUrl) {
+    throw new Error("Photo URL is required");
+  }
+
   return await addPhoto(photoData);
 };
 
 const uploadPhotoToS3 = async (file, userId, photoId) => {
+  if (!file) {
+    throw new Error("No file uploaded");
+  }
+
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
   const key = `photos/${userId}-${photoId}-${file.originalname}`;
   const uploadParams = {
     Bucket: process.env.S3_BUCKET,
@@ -51,6 +66,14 @@ const ensureDirectoryExistence = (dir) => {
 };
 
 const downloadPhoto = async (key, localPath) => {
+  if (!key) {
+    throw new Error("Photo key is required");
+  }
+
+  if (!localPath) {
+    throw new Error("Local path is required");
+  }
+
   ensureDirectoryExistence(localPath); // Ensure the directory exists
 
   const params = { Bucket: process.env.S3_BUCKET, Key: key };
@@ -74,10 +97,18 @@ const downloadPhoto = async (key, localPath) => {
 };
 
 const retrievePhotos = async (userId) => {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
   return await getPhotos(userId);
 };
 
 const downloadPhotos = async (photos) => {
+  if (!photos || !Array.isArray(photos)) {
+    throw new Error("Photos must be a valid array");
+  }
+
   const downloadPromises = photos.map((photo) => {
     const localPath = path.join(__dirname, "../../../src/public/images");
     return downloadPhoto(photo.photoUrl, localPath).then((localFilePath) => {
@@ -91,20 +122,22 @@ const downloadPhotos = async (photos) => {
 };
 
 const downloadProfilePicture = async (profilePictureUrl) => {
-  let profilePictureLocalUrl = null;
-  if (profilePictureUrl) {
-    const profilePictureLocalPath = path.join(
-      __dirname,
-      "../../../src/public/profilePictures"
-    );
-    const profilePictureLocalFilePath = await downloadPhoto(
-      profilePictureUrl,
-      profilePictureLocalPath
-    );
-    profilePictureLocalUrl = `/profilePictures/${path.basename(
-      profilePictureLocalFilePath
-    )}`;
+  if (!profilePictureUrl) {
+    throw new Error("Profile picture URL is required");
   }
+
+  let profilePictureLocalUrl = null;
+  const profilePictureLocalPath = path.join(
+    __dirname,
+    "../../../src/public/profilePictures"
+  );
+  const profilePictureLocalFilePath = await downloadPhoto(
+    profilePictureUrl,
+    profilePictureLocalPath
+  );
+  profilePictureLocalUrl = `/profilePictures/${path.basename(
+    profilePictureLocalFilePath
+  )}`;
   return profilePictureLocalUrl;
 };
 

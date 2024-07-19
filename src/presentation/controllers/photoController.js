@@ -1,3 +1,4 @@
+// src/presentation/controllers/photoController.js
 import { v4 as uuidv4 } from "uuid";
 import {
   insertPhoto,
@@ -10,14 +11,6 @@ const addPhoto = async (req, res) => {
     const img = req.file;
     const userId = req.body.userId;
     const photoId = uuidv4(); // Generate a unique photoId
-
-    if (!img) {
-      throw new Error("No file uploaded");
-    }
-
-    if (!userId) {
-      throw new Error("User ID is required");
-    }
 
     const key = await uploadPhotoToS3(img, userId, photoId); // Upload photo to S3
 

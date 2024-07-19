@@ -1,3 +1,4 @@
+// src/presentation/routes/viewRoutes.js
 import express from "express";
 import {
   retrievePhotos,
@@ -51,9 +52,8 @@ router.get("/profile", async (req, res) => {
     try {
       const user = req.user;
       const photos = await retrievePhotos(user.id);
-      const profilePictureUrl = await retrieveProfilePicture(user.id);
-
       const localPhotos = await downloadPhotos(photos);
+      const profilePictureUrl = await retrieveProfilePicture(user.id);
       const profilePictureLocalUrl = await downloadProfilePicture(
         profilePictureUrl
       );

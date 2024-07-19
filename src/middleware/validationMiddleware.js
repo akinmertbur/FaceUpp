@@ -74,3 +74,21 @@ export const validateProfilePicture = [
     next();
   },
 ];
+
+// Photo validations
+export const validateAddPhoto = [
+  check("userId").notEmpty().withMessage("User ID is required"),
+  check("photo").custom((value, { req }) => {
+    if (!req.file) {
+      throw new Error("No file uploaded");
+    }
+    return true;
+  }),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+  },
+];
