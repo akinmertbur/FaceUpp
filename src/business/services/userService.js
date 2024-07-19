@@ -4,6 +4,7 @@ import {
   editBio,
   editUsername,
   editEmail,
+  getUserByEmail,
 } from "../../data/repositories/userRepository.js";
 
 const addUser = async (userData) => {
@@ -47,6 +48,12 @@ const changeUsername = async (userId, username) => {
 };
 
 const changeEmail = async (userId, email) => {
+  const existingUser = await getUserByEmail(email);
+
+  if (existingUser) {
+    throw new Error("Email already in use!");
+  }
+
   if (!userId) {
     throw new Error("Invalid user ID");
   }
