@@ -25,7 +25,7 @@ const editBio = async (req, res) => {
   try {
     const user = await changeBio(userId, bioText);
     log(`Bio edited for the user ID: ${userId}`);
-    res.status(201).redirect("/api/photos/getPhotos");
+    res.status(201).redirect("/profile");
   } catch (err) {
     error(`Failed to edit bio: ${err.message}`); // Log an error message if there's an exception
     res.status(500).json({ message: err.message });
@@ -37,7 +37,7 @@ const editUsername = async (req, res) => {
   try {
     const user = await changeUsername(userId, username);
     log(`Username edited for the user ID: ${userId}`);
-    res.status(201).redirect("/api/photos/getPhotos");
+    res.status(201).redirect("/profile");
   } catch (err) {
     error(`Failed to edit username: ${err.message}`);
     res.status(500).json({ message: err.message });
@@ -49,7 +49,7 @@ const editEmail = async (req, res) => {
   try {
     const user = await changeEmail(userId, email);
     log(`Email edited for the user ID: ${userId}`);
-    res.status(201).redirect("/api/photos/getphotos");
+    res.status(201).redirect("/profile");
   } catch (err) {
     error(`Failed to edit email: ${err.message}`);
     res.status(500).json({ message: err.message });
@@ -74,7 +74,7 @@ const editProfilePicture = async (req, res) => {
 
     const photo = await changeProfilePicture(userId, key);
     log(`Profile picture added with ID: ${photoId}`); // Log a message when photo is created
-    res.status(201).redirect("/api/photos/getphotos");
+    res.status(201).redirect("/profile");
   } catch (err) {
     error(`Failed to add profile picture: ${err.message}`); // Log an error message if there's an exception
     res.status(500).json({ message: err.message });

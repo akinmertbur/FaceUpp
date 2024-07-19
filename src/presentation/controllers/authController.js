@@ -67,7 +67,7 @@ const editPasswordController = async (req, res) => {
   try {
     const hash = await bcrypt.hash(password, saltRounds);
     await updateUserPassword(userId, hash);
-    res.redirect("/api/photos/getphotos");
+    res.redirect("/profile");
   } catch (err) {
     error(`Error changing password: ${err.message}`);
     res.status(500).json({ message: err.message });

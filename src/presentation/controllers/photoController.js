@@ -2,17 +2,8 @@ import { v4 as uuidv4 } from "uuid";
 import {
   insertPhoto,
   uploadPhotoToS3,
-  retrievePhotos,
-  downloadPhoto,
 } from "../../business/services/photoService.js";
-import { retrieveProfilePicture } from "../../business/services/userService.js";
 import { log, error } from "../../utils/logger.js";
-import { fileURLToPath } from "url";
-import path from "path";
-import fs from "fs";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const addPhoto = async (req, res) => {
   try {
@@ -44,71 +35,4 @@ const addPhoto = async (req, res) => {
   }
 };
 
-const getPhotos = async (req, res) => {
-  try {
-    const user = req.user;
-    const photos = await retrievePhotos(user.id);
-    const profilePictureUrl = await retrieveProfilePicture(user.id);
-
-    const downloadPromises = photos.map((photo) => {
-      const localPath = path.join(__dirname, "../../../src/public/images");
-      return downloadPhoto(photo.photoUrl, localPath).then((localFilePath) => {
-        return {
-          ...photo,
-          localUrl: `/images/${path.basename(localFilePath)}`,
-        };
-      });
-    });
-
-    const localPhotos = await Promise.all(downloadPromises);
-
-    let profilePictureLocalUrl = null;
-    if (profilePictureUrl) {
-      const profilePictureLocalPath = path.join(
-        __dirname,
-        "../../../src/public/profilePictures"
-      );
-      const profilePictureLocalFilePath = await downloadPhoto(
-        profilePictureUrl,
-        profilePictureLocalPath
-      );
-      profilePictureLocalUrl = `/profilePictures/${path.basename(
-        profilePictureLocalFilePath
-      )}`;
-    }
-
-    res.render("profile.ejs", {
-      photos: localPhotos,
-      profilePicture: profilePictureLocalUrl,
-      user,
-    });
-
-    // Schedule deletion of the images directory after rendering
-    setTimeout(() => {
-      const localPath = path.join(__dirname, "../../../src/public/images");
-      fs.rmdir(localPath, { recursive: true }, (err) => {
-        if (err) {
-          error(`Failed to delete images directory: ${err.message}`);
-        } else {
-          log("Images directory deleted successfully");
-        }
-      });
-      const profilePicturePath = path.join(
-        __dirname,
-        "../../../src/public/profilePictures"
-      );
-      fs.rmdir(profilePicturePath, { recursive: true }, (err) => {
-        if (err) {
-          error(`Failed to delete profilePictures directory: ${err.message}`);
-        } else {
-          log("ProfilePictures directory deleted successfully");
-        }
-      });
-    }, 5000); // Adjust the delay as needed
-  } catch (err) {
-    error(`Failed to retrieve photos: ${err.message}`);
-    res.status(500).json({ message: err.message });
-  }
-};
-
-export { addPhoto, getPhotos };
+export { addPhoto };
