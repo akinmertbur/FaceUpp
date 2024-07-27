@@ -74,4 +74,13 @@ router.get("/profile", async (req, res) => {
   }
 });
 
+router.get("/search", async (req, res) => {
+  if (req.isAuthenticated()) {
+    const errMsg = req.query.errmsg || "";
+    res.render("search.ejs", { errMsg });
+  } else {
+    res.redirect("/login");
+  }
+});
+
 export default router;

@@ -6,6 +6,7 @@ import {
   getUserByEmail,
   editProfilePicture,
   getProfilePicture,
+  getUsersByUsername,
 } from "../../data/repositories/userRepository.js";
 
 const addUser = async (userData) => {
@@ -84,6 +85,11 @@ const retrieveProfilePicture = async (userId) => {
   return user ? user.profilePicture : null;
 };
 
+const retrieveUsersByUsername = async (username) => {
+  const users = await getUsersByUsername(username);
+  return users;
+};
+
 export {
   addUser,
   changeBio,
@@ -91,4 +97,5 @@ export {
   changeEmail,
   changeProfilePicture,
   retrieveProfilePicture,
+  retrieveUsersByUsername,
 };

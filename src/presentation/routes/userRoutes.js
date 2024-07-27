@@ -5,6 +5,7 @@ import {
   editUsername,
   editEmail,
   editProfilePicture,
+  getUsersByUsername,
 } from "../controllers/userController.js";
 import {
   validateCreateUser,
@@ -12,6 +13,7 @@ import {
   validateEditUsername,
   validateEditEmail,
   validateProfilePicture,
+  validategetUsersByUsername,
 } from "../../middleware/validationMiddleware.js";
 import multer from "multer";
 
@@ -30,5 +32,6 @@ router.post(
   validateProfilePicture,
   editProfilePicture
 );
+router.post("/getUsers", validategetUsersByUsername, getUsersByUsername);
 
 export default router;

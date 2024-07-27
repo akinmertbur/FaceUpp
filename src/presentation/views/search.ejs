@@ -1,0 +1,36 @@
+<%- include('partials/header') %>
+
+<div class="jumbotron centered">
+    <div class="container">
+        <% if (locals.errMsg) { %>
+            <div class="alert alert-success">
+              <%= errMsg %>
+            </div>
+          <% } %>
+          <% if (locals.success) { %>
+            <div class="alert alert-success">
+              <%= success %>
+            </div>
+          <% } %>
+        <form id="searchForm" action="/api/users/getUsers" method="post">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+                <button type="submit" class="btn btn-dark">Search</button>
+            </div>    
+        </form>
+    </div>
+    <div class="container user-table">
+        <% if(locals.users) { %>
+            <table>
+                <% users.forEach(user => { %>
+                    <tr>
+                        <td><a href="#"><%= user.username %></a></td>
+                    </tr>
+                <% }) %>
+            </table>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

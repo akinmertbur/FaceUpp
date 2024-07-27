@@ -1,4 +1,5 @@
 import User from "../models/userModel.js";
+import { Op } from "sequelize";
 
 const createUser = async (userData) => {
   return await User.create(userData);
@@ -46,6 +47,12 @@ const getProfilePicture = async (userId) => {
   return await User.findOne({ where: { id: userId } });
 };
 
+const getUsersByUsername = async (username) => {
+  return await User.findAll({
+    where: { username: { [Op.like]: `%${username}%` } },
+  });
+};
+
 export {
   createUser,
   editBio,
@@ -56,4 +63,5 @@ export {
   updatePassword,
   editProfilePicture,
   getProfilePicture,
+  getUsersByUsername,
 };

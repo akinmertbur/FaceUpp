@@ -5,6 +5,7 @@ import {
   changeUsername,
   changeEmail,
   changeProfilePicture,
+  retrieveUsersByUsername,
 } from "../../business/services/userService.js";
 import { uploadPhotoToS3 } from "../../business/services/photoService.js";
 import { log, error } from "../../utils/logger.js"; // Import the logger functions
@@ -81,4 +82,28 @@ const editProfilePicture = async (req, res) => {
   }
 };
 
-export { createUser, editBio, editUsername, editEmail, editProfilePicture };
+const getUsersByUsername = async (req, res) => {
+  try {
+    const { username } = req.body;
+    const users = await retrieveUsersByUsername(username);
+    if (users.length == 0) {
+      throw new Error("User not found!");
+    }
+    res.status(201).render("search.ejs", {
+      users,
+      success: `${users.length} user(s) are found!`,
+    });
+  } catch (err) {
+    error(`Failed to retrieve users`);
+    res.status(500).redirect(`/search?errmsg=${err.message}`);
+  }
+};
+
+export {
+  createUser,
+  editBio,
+  editUsername,
+  editEmail,
+  editProfilePicture,
+  getUsersByUsername,
+};

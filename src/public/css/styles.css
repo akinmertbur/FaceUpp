@@ -29,3 +29,22 @@ body {
 .hide {
   display: none;
 }
+
+.user-table table,
+th,
+td {
+  border: 1px solid;
+}
+
+.user-table table {
+  width: 50%;
+}
+
+.user-table td {
+  height: 40px;
+}
+
+.user-table {
+  display: flex;
+  justify-content: center;
+}
