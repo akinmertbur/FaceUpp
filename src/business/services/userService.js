@@ -86,8 +86,7 @@ const retrieveProfilePicture = async (userId) => {
 };
 
 const retrieveUsersByUsername = async (username) => {
-  const users = await getUsersByUsername(username);
-  return users;
+  return await getUsersByUsername(username);
 };
 
 export {

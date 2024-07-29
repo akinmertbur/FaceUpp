@@ -87,9 +87,12 @@ const getUsersByUsername = async (req, res) => {
     const { username } = req.body;
     const users = await retrieveUsersByUsername(username);
     if (users.length == 0) {
-      throw new Error("User not found!");
+      return res.status(404).render("search.ejs", {
+        users: [],
+        errMsg: "User not found!",
+      });
     }
-    res.status(201).render("search.ejs", {
+    res.status(200).render("search.ejs", {
       users,
       success: `${users.length} user(s) are found!`,
     });
