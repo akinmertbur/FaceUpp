@@ -7,6 +7,8 @@ import {
   cleanUpLocalFiles,
 } from "../../business/services/photoService.js";
 import { retrieveProfilePicture } from "../../business/services/userService.js";
+import { findUserById } from "../../business/services/authService.js";
+import { isFollowing } from "../../business/services/followService.js";
 import { log, error } from "../../utils/logger.js";
 
 const router = express.Router();
@@ -78,6 +80,35 @@ router.get("/search", async (req, res) => {
   if (req.isAuthenticated()) {
     const errMsg = req.query.errmsg || "";
     res.render("search.ejs", { errMsg });
+  } else {
+    res.redirect("/login");
+  }
+});
+
+router.get("/userProfile/:userId", async (req, res) => {
+  if (req.isAuthenticated()) {
+    try {
+      const userId = req.params.userId;
+      const following = await isFollowing(req.user.id, userId);
+      const user = await findUserById(userId);
+      const photos = await retrievePhotos(userId);
+      const localPhotos = await downloadPhotos(photos);
+      const profilePictureUrl = await retrieveProfilePicture(userId);
+      const profilePictureLocalUrl = await downloadProfilePicture(
+        profilePictureUrl
+      );
+      res.render("userProfile.ejs", {
+        photos: localPhotos,
+        profilePicture: profilePictureLocalUrl,
+        user,
+        following,
+      });
+
+      cleanUpLocalFiles();
+    } catch (err) {
+      error(`Failed to retrieve photos: ${err.message}`);
+      res.status(500).json({ message: err.message });
+    }
   } else {
     res.redirect("/login");
   }

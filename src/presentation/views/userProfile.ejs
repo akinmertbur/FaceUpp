@@ -1,0 +1,40 @@
+<%- include('partials/header') %>
+<% if (locals.user) { %>
+  <% if (profilePicture) { %>
+    <div class="photo-gallery">
+      <div class="photo-item">
+        <img src="<%= profilePicture %>" alt="Profile Picture">
+      </div>
+    </div>
+  <% } %>
+  <h1><%= user.username %></h1>
+  <p><%= user.bio %></p>
+<% } %>
+
+<% if(locals.following) { %>
+  <div>
+    <button>Unfollow</button>
+  </div>
+<% } else { %>
+  <div>
+    <button>Follow</button>
+  </div>
+<% } %>
+
+<% if (photos && photos.length > 0) { %>
+  <div class="photo-gallery">
+    <% photos.forEach(photo => { %>
+      <div class="photo-item">
+        <img src="<%= photo.localUrl %>" alt="Photo">
+      </div>
+    <% }) %>
+  </div>
+<% } else { %>
+  <p>No photos available.</p>
+<% } %>
+<a href="/">Home</a>
+
+<script>
+  
+</script>
+<%- include('partials/footer') %>
