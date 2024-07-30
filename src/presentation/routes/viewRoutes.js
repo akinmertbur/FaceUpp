@@ -94,9 +94,12 @@ router.get("/userProfile/:userId", async (req, res) => {
       const photos = await retrievePhotos(userId);
       const localPhotos = await downloadPhotos(photos);
       const profilePictureUrl = await retrieveProfilePicture(userId);
-      const profilePictureLocalUrl = await downloadProfilePicture(
-        profilePictureUrl
-      );
+      let profilePictureLocalUrl;
+      if (profilePictureUrl) {
+        profilePictureLocalUrl = await downloadProfilePicture(
+          profilePictureUrl
+        );
+      }
       res.render("userProfile.ejs", {
         photos: localPhotos,
         profilePicture: profilePictureLocalUrl,
@@ -104,9 +107,9 @@ router.get("/userProfile/:userId", async (req, res) => {
         following,
       });
 
-      cleanUpLocalFiles();
+      //cleanUpLocalFiles();
     } catch (err) {
-      error(`Failed to retrieve photos: ${err.message}`);
+      error(`Failed to render user profile: ${err.message}`);
       res.status(500).json({ message: err.message });
     }
   } else {

@@ -1,7 +1,11 @@
 import Follow from "../models/followModel.js";
 
 const follow = async (followerId, followedId) => {
-  return await Follow.create(followerId, followedId);
+  const followObj = {
+    followerId: followerId,
+    followedId: followedId,
+  };
+  return await Follow.create(followObj);
 };
 
 const unfollow = async (followerId, followedId) => {

@@ -19,7 +19,7 @@ const Follow = sequelize.define(
     },
   },
   {
-    timestamps: true,
+    timestamps: false,
   }
 );
 

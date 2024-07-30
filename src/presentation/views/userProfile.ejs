@@ -9,16 +9,26 @@
   <% } %>
   <h1><%= user.username %></h1>
   <p><%= user.bio %></p>
-<% } %>
 
-<% if(locals.following) { %>
-  <div>
-    <button>Unfollow</button>
-  </div>
-<% } else { %>
-  <div>
-    <button>Follow</button>
-  </div>
+  <% if(locals.following) { %>
+    <div>
+      <form action="/api/following/unfollow" method="POST">
+        <div class="form-group">
+          <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+        </div>
+        <button type="submit" class="btn btn-dark">Unfollow</button>
+      </form>
+    </div>
+  <% } else { %>
+    <div>
+      <form action="/api/following/follow" method="POST">
+        <div class="form-group">
+          <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+        </div>
+        <button type="submit" class="btn btn-dark">Follow</button>
+      </form>
+    </div>
+  <% } %>
 <% } %>
 
 <% if (photos && photos.length > 0) { %>
