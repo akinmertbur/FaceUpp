@@ -2,6 +2,8 @@ import {
   follow,
   unfollow,
   getFollowingInfo,
+  getFollowers,
+  getFollowings,
 } from "../../data/repositories/followRepository.js";
 
 const followUser = async (followerId, followedId) => {
@@ -28,4 +30,26 @@ const isFollowing = async (followerId, followedId) => {
   return await getFollowingInfo(followerId, followedId);
 };
 
-export { followUser, unfollowUser, isFollowing };
+const retrieveFollowers = async (userId) => {
+  if (!userId) {
+    throw new Error("User ID is required!");
+  }
+
+  return await getFollowers(userId);
+};
+
+const retrieveFollowings = async (userId) => {
+  if (!userId) {
+    throw new Error("User ID is required!");
+  }
+
+  return await getFollowings(userId);
+};
+
+export {
+  followUser,
+  unfollowUser,
+  isFollowing,
+  retrieveFollowers,
+  retrieveFollowings,
+};

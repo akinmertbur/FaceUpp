@@ -17,13 +17,16 @@ body {
 .photo-gallery {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-start;
+  height: 80%;
 }
 .photo-item {
-  margin: 10px;
+  margin: 20px;
+  margin-left: 50px;
 }
 .photo-item img {
-  max-width: 100px;
-  max-height: 100px;
+  width: 300px;
+  height: 300px;
 }
 
 .hide {
@@ -47,4 +50,37 @@ td {
 .user-table {
   display: flex;
   justify-content: center;
+}
+
+#profile-picture {
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+  margin: 20px;
+  margin-right: 0;
+}
+
+.first-section {
+  display: flex;
+  gap: 2%;
+}
+
+.second-section {
+  margin: 20px;
+}
+
+.followings-followers {
+  margin: 70px 10px;
+  height: 40px;
+}
+
+.username-bio {
+  display: block;
+  margin: 50px 0;
+  text-align: center;
+}
+
+.bio {
+  max-width: 50%;
+  margin: 0 30px;
 }

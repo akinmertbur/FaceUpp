@@ -8,7 +8,11 @@ import {
 } from "../../business/services/photoService.js";
 import { retrieveProfilePicture } from "../../business/services/userService.js";
 import { findUserById } from "../../business/services/authService.js";
-import { isFollowing } from "../../business/services/followService.js";
+import {
+  isFollowing,
+  retrieveFollowers,
+  retrieveFollowings,
+} from "../../business/services/followService.js";
 import { log, error } from "../../utils/logger.js";
 
 const router = express.Router();
@@ -59,11 +63,15 @@ router.get("/profile", async (req, res) => {
       const profilePictureLocalUrl = await downloadProfilePicture(
         profilePictureUrl
       );
+      const followers = await retrieveFollowers(user.id);
+      const followings = await retrieveFollowings(user.id);
 
       res.render("profile.ejs", {
         photos: localPhotos,
         profilePicture: profilePictureLocalUrl,
         user,
+        followers,
+        followings,
       });
 
       cleanUpLocalFiles();

@@ -19,4 +19,16 @@ const getFollowingInfo = async (followerId, followedId) => {
   });
 };
 
-export { follow, unfollow, getFollowingInfo };
+const getFollowers = async (userId) => {
+  return await Follow.findAll({
+    where: { followedId: userId },
+  });
+};
+
+const getFollowings = async (userId) => {
+  return await Follow.findAll({
+    where: { followerId: userId },
+  });
+};
+
+export { follow, unfollow, getFollowingInfo, getFollowers, getFollowings };
