@@ -144,24 +144,32 @@ const downloadProfilePicture = async (profilePictureUrl) => {
 const cleanUpLocalFiles = () => {
   setTimeout(() => {
     const localPath = path.join(__dirname, "../../../src/public/images");
-    fs.rmdir(localPath, { recursive: true }, (err) => {
-      if (err) {
-        error(`Failed to delete images directory: ${err.message}`);
-      } else {
-        log("Images directory deleted successfully");
-      }
-    });
+    if (fs.existsSync(localPath)) {
+      fs.rmdir(localPath, { recursive: true }, (err) => {
+        if (err) {
+          error(`Failed to delete images directory: ${err.message}`);
+        } else {
+          log("Images directory deleted successfully");
+        }
+      });
+    } else {
+      log("Images directory does not exist");
+    }
     const profilePicturePath = path.join(
       __dirname,
       "../../../src/public/profilePictures"
     );
-    fs.rmdir(profilePicturePath, { recursive: true }, (err) => {
-      if (err) {
-        error(`Failed to delete profilePictures directory: ${err.message}`);
-      } else {
-        log("ProfilePictures directory deleted successfully");
-      }
-    });
+    if (fs.existsSync(profilePicturePath)) {
+      fs.rmdir(profilePicturePath, { recursive: true }, (err) => {
+        if (err) {
+          error(`Failed to delete profilePictures directory: ${err.message}`);
+        } else {
+          log("ProfilePictures directory deleted successfully");
+        }
+      });
+    } else {
+      log("ProfilePictures directory does not exist");
+    }
   }, 5000); // Adjust the delay as needed
 };
 

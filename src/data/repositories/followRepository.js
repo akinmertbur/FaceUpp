@@ -1,16 +1,12 @@
 import Follow from "../models/followModel.js";
 
 const follow = async (followerId, followedId) => {
-  const followObj = {
-    followerId: followerId,
-    followedId: followedId,
-  };
-  return await Follow.create(followObj);
+  return await Follow.create({ followerId, followedId });
 };
 
 const unfollow = async (followerId, followedId) => {
   const row = await Follow.findOne({
-    where: { followerId: followerId, followedId: followedId },
+    where: { followerId, followedId },
   });
   if (row) {
     await row.destroy(); // deletes the row
@@ -19,7 +15,7 @@ const unfollow = async (followerId, followedId) => {
 
 const getFollowingInfo = async (followerId, followedId) => {
   return await Follow.findOne({
-    where: { followerId: followerId, followedId: followedId },
+    where: { followerId, followedId },
   });
 };
 

@@ -1,9 +1,10 @@
 import express from "express";
 import { follow, unfollow } from "../controllers/followController.js";
+import { validateFollowUnfollow } from "../../middleware/validationMiddleware.js";
 
 const router = express.Router();
 
-router.post("/follow", follow);
-router.post("/unfollow", unfollow);
+router.post("/follow", validateFollowUnfollow, follow);
+router.post("/unfollow", validateFollowUnfollow, unfollow);
 
 export default router;

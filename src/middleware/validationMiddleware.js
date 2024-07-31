@@ -103,3 +103,14 @@ export const validategetUsersByUsername = [
     next();
   },
 ];
+
+export const validateFollowUnfollow = [
+  check("userId").notEmpty().withMessage("User ID is required!"),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+  },
+];

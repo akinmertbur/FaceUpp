@@ -8,9 +8,9 @@ import { log, error } from "../../utils/logger.js";
 const follow = async (req, res) => {
   try {
     const { userId } = req.body;
-    const fallowerId = req.user.id;
-    const following = await followUser(fallowerId, userId);
-    log(`${fallowerId} is following ${userId}`);
+    const followerId = req.user.id;
+    await followUser(followerId, userId);
+    log(`${followerId} is following ${userId}`);
     res.status(200).redirect(`/userProfile/${userId}`);
   } catch (err) {
     error(`Failed to follow: ${err.message}`);
@@ -21,9 +21,9 @@ const follow = async (req, res) => {
 const unfollow = async (req, res) => {
   try {
     const { userId } = req.body;
-    const fallowerId = req.user.id;
-    const unfollowing = unfollowUser(fallowerId, userId);
-    log(`${fallowerId} is unfollowing ${userId}`);
+    const followerId = req.user.id;
+    await unfollowUser(followerId, userId);
+    log(`${followerId} is unfollowing ${userId}`);
     res.status(200).redirect(`/userProfile/${userId}`);
   } catch (err) {
     error(`Failed to unfollow: ${err.message}`);

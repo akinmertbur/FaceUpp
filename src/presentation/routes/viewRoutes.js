@@ -89,25 +89,27 @@ router.get("/userProfile/:userId", async (req, res) => {
   if (req.isAuthenticated()) {
     try {
       const userId = req.params.userId;
-      const following = await isFollowing(req.user.id, userId);
-      const user = await findUserById(userId);
-      const photos = await retrievePhotos(userId);
-      const localPhotos = await downloadPhotos(photos);
-      const profilePictureUrl = await retrieveProfilePicture(userId);
-      let profilePictureLocalUrl;
-      if (profilePictureUrl) {
-        profilePictureLocalUrl = await downloadProfilePicture(
-          profilePictureUrl
-        );
-      }
-      res.render("userProfile.ejs", {
-        photos: localPhotos,
-        profilePicture: profilePictureLocalUrl,
-        user,
-        following,
-      });
+      if (req.user.id == userId) {
+        res.redirect("/profile");
+      } else {
+        const following = await isFollowing(req.user.id, userId);
+        const user = await findUserById(userId);
+        const photos = await retrievePhotos(userId);
+        const localPhotos = await downloadPhotos(photos);
+        const profilePictureUrl = await retrieveProfilePicture(userId);
+        const profilePictureLocalUrl = profilePictureUrl
+          ? await downloadProfilePicture(profilePictureUrl)
+          : null;
 
-      //cleanUpLocalFiles();
+        res.render("userProfile.ejs", {
+          photos: localPhotos,
+          profilePicture: profilePictureLocalUrl,
+          user,
+          following,
+        });
+
+        cleanUpLocalFiles();
+      }
     } catch (err) {
       error(`Failed to render user profile: ${err.message}`);
       res.status(500).json({ message: err.message });
