@@ -17,8 +17,30 @@
         </div>
       </div>
       <div class="followings-followers">
-        <button><%= followings.length %> Followings</button>
-        <button><%= followers.length %> Followers</button>
+        <button id="followings-button" onclick="toggleFollowingsPanel()" ><%= followings.length %> Followings</button>
+        <button id="followers-button" onclick="toggleFollowersPanel()" ><%= followers.length %> Followers</button>
+      </div>
+      <div class="followings-followers-container">
+        <div id="followings-container" class="followings-list hide">
+          <p>Followings</p>
+          <% if (followings.length > 0) { %>
+            <ul>
+              <% followings.forEach(user => { %>
+                <li><a href="/userProfile/<%= user.id %>"><%= user.username %></a></li>
+              <% }) %>
+            </ul>
+          <% } %>
+        </div>
+        <div id="followers-container" class="followers-list hide">
+          <p>Followers</p>
+          <% if (followers.length > 0) { %>
+            <ul>
+              <% followers.forEach(user => { %>
+                <li><a href="/userProfile/<%= user.id %>"><%= user.username %></a></li>
+              <% }) %>
+            </ul>
+          <% } %>
+        </div>
       </div>
     </div>
     
@@ -162,6 +184,26 @@
       photo.classList.add('hide');
       saveProfilePictureButton.classList.add('hide');
       addProfilePictureButton.classList.remove('hide');
+    }
+  }
+
+  function toggleFollowingsPanel() {
+    const followingContainer = document.getElementById("followings-container");
+
+    if(followingContainer.classList.contains('hide')) {
+      followingContainer.classList.remove('hide');
+    } else {
+      followingContainer.classList.add('hide');
+    }
+  }
+
+  function toggleFollowersPanel() {
+    const followerContainer = document.getElementById("followers-container");
+
+    if(followerContainer.classList.contains('hide')) {
+      followerContainer.classList.remove('hide');
+    } else {
+      followerContainer.classList.add('hide');
     }
   }
 

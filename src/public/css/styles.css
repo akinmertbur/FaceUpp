@@ -63,6 +63,7 @@ td {
 .first-section {
   display: flex;
   gap: 2%;
+  height: fit-content;
 }
 
 .second-section {
@@ -83,4 +84,44 @@ td {
 .bio {
   max-width: 50%;
   margin: 0 30px;
+}
+
+.followings-list {
+  margin: 0 50px;
+  background-color: darkgray;
+  width: fit-content;
+  height: fit-content;
+}
+
+.followers-list {
+  margin: 0 50px;
+  background-color: darkgray;
+  width: fit-content;
+  height: fit-content;
+}
+
+.followings-list li {
+  min-width: 100px;
+}
+
+.followers-list li {
+  min-width: 100px;
+}
+
+.followings-followers-container {
+  margin: 50px 20px 20px 20px;
+  display: flex;
+  width: fit-content;
+  height: fit-content;
+  background-color: darkgray;
+}
+
+.followers-list p {
+  font-weight: bold;
+  text-align: center;
+}
+
+.followings-list p {
+  font-weight: bold;
+  text-align: center;
 }

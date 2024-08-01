@@ -54,12 +54,26 @@ router.get("/profile", ensureAuthenticated, async (req, res) => {
     const followers = await retrieveFollowers(user.id);
     const followings = await retrieveFollowings(user.id);
 
+    // followings_username contains details of the followings.
+    const followingsDetail = await Promise.all(
+      followings.map(async (follow) => {
+        return await findUserById(follow.followedId);
+      })
+    );
+
+    // followers_username contains details of the followers.
+    const followersDetail = await Promise.all(
+      followers.map(async (follow) => {
+        return await findUserById(follow.followerId);
+      })
+    );
+
     res.render("profile.ejs", {
       photos: localPhotos,
       profilePicture: profilePictureLocalUrl,
       user,
-      followers,
-      followings,
+      followings: followingsDetail,
+      followers: followersDetail,
     });
 
     cleanUpLocalFiles();
