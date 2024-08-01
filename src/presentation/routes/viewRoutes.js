@@ -14,15 +14,12 @@ import {
   retrieveFollowings,
 } from "../../business/services/followService.js";
 import { log, error } from "../../utils/logger.js";
+import { ensureAuthenticated } from "../../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  if (req.isAuthenticated()) {
-    res.redirect("/home");
-  } else {
-    res.render("index.ejs");
-  }
+router.get("/", ensureAuthenticated, (req, res) => {
+  res.redirect("/home");
 });
 
 router.get("/login", (req, res) => {
@@ -33,97 +30,77 @@ router.get("/register", (req, res) => {
   res.render("register.ejs");
 });
 
-router.get("/home", (req, res) => {
-  if (req.isAuthenticated()) {
-    const successMessage = req.query.success || "";
-    const { username } = req.user;
-    res.render("home.ejs", { username, successMessage });
-  } else {
-    res.redirect("/login");
+router.get("/home", ensureAuthenticated, (req, res) => {
+  const successMessage = req.query.success || "";
+  const { username } = req.user;
+  res.render("home.ejs", { username, successMessage });
+});
+
+router.get("/addContent", ensureAuthenticated, (req, res) => {
+  const errMsg = req.query.errmsg || "";
+  const { id } = req.user;
+  res.render("addContent.ejs", { userId: id, errMsg });
+});
+
+router.get("/profile", ensureAuthenticated, async (req, res) => {
+  try {
+    const user = req.user;
+    const photos = await retrievePhotos(user.id);
+    const localPhotos = await downloadPhotos(photos);
+    const profilePictureUrl = await retrieveProfilePicture(user.id);
+    const profilePictureLocalUrl = await downloadProfilePicture(
+      profilePictureUrl
+    );
+    const followers = await retrieveFollowers(user.id);
+    const followings = await retrieveFollowings(user.id);
+
+    res.render("profile.ejs", {
+      photos: localPhotos,
+      profilePicture: profilePictureLocalUrl,
+      user,
+      followers,
+      followings,
+    });
+
+    cleanUpLocalFiles();
+  } catch (err) {
+    error(`Failed to retrieve photos: ${err.message}`);
+    res.status(500).json({ message: err.message });
   }
 });
 
-router.get("/addContent", (req, res) => {
-  if (req.isAuthenticated()) {
-    const errMsg = req.query.errmsg || "";
-    const { id } = req.user;
-    res.render("addContent.ejs", { userId: id, errMsg });
-  } else {
-    res.redirect("/login");
-  }
+router.get("/search", ensureAuthenticated, async (req, res) => {
+  const errMsg = req.query.errmsg || "";
+  res.render("search.ejs", { errMsg });
 });
 
-router.get("/profile", async (req, res) => {
-  if (req.isAuthenticated()) {
-    try {
-      const user = req.user;
-      const photos = await retrievePhotos(user.id);
+router.get("/userProfile/:userId", ensureAuthenticated, async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    if (req.user.id == userId) {
+      res.redirect("/profile");
+    } else {
+      const following = await isFollowing(req.user.id, userId);
+      const user = await findUserById(userId);
+      const photos = await retrievePhotos(userId);
       const localPhotos = await downloadPhotos(photos);
-      const profilePictureUrl = await retrieveProfilePicture(user.id);
-      const profilePictureLocalUrl = await downloadProfilePicture(
-        profilePictureUrl
-      );
-      const followers = await retrieveFollowers(user.id);
-      const followings = await retrieveFollowings(user.id);
+      const profilePictureUrl = await retrieveProfilePicture(userId);
+      const profilePictureLocalUrl = profilePictureUrl
+        ? await downloadProfilePicture(profilePictureUrl)
+        : null;
 
-      res.render("profile.ejs", {
+      res.render("userProfile.ejs", {
         photos: localPhotos,
         profilePicture: profilePictureLocalUrl,
         user,
-        followers,
-        followings,
+        following,
       });
 
       cleanUpLocalFiles();
-    } catch (err) {
-      error(`Failed to retrieve photos: ${err.message}`);
-      res.status(500).json({ message: err.message });
     }
-  } else {
-    res.redirect("/login");
-  }
-});
-
-router.get("/search", async (req, res) => {
-  if (req.isAuthenticated()) {
-    const errMsg = req.query.errmsg || "";
-    res.render("search.ejs", { errMsg });
-  } else {
-    res.redirect("/login");
-  }
-});
-
-router.get("/userProfile/:userId", async (req, res) => {
-  if (req.isAuthenticated()) {
-    try {
-      const userId = req.params.userId;
-      if (req.user.id == userId) {
-        res.redirect("/profile");
-      } else {
-        const following = await isFollowing(req.user.id, userId);
-        const user = await findUserById(userId);
-        const photos = await retrievePhotos(userId);
-        const localPhotos = await downloadPhotos(photos);
-        const profilePictureUrl = await retrieveProfilePicture(userId);
-        const profilePictureLocalUrl = profilePictureUrl
-          ? await downloadProfilePicture(profilePictureUrl)
-          : null;
-
-        res.render("userProfile.ejs", {
-          photos: localPhotos,
-          profilePicture: profilePictureLocalUrl,
-          user,
-          following,
-        });
-
-        cleanUpLocalFiles();
-      }
-    } catch (err) {
-      error(`Failed to render user profile: ${err.message}`);
-      res.status(500).json({ message: err.message });
-    }
-  } else {
-    res.redirect("/login");
+  } catch (err) {
+    error(`Failed to render user profile: ${err.message}`);
+    res.status(500).json({ message: err.message });
   }
 });
 

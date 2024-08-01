@@ -7,43 +7,63 @@ import {
 } from "../../data/repositories/followRepository.js";
 
 const followUser = async (followerId, followedId) => {
-  if (!followedId || !followerId) {
-    throw new Error("IDs required for follower and followed users!");
-  }
+  try {
+    if (!followedId || !followerId) {
+      throw new Error("IDs required for follower and followed users!");
+    }
 
-  return await follow(followerId, followedId);
+    return await follow(followerId, followedId);
+  } catch (err) {
+    throw new Error(`Failed to follow user: ${err.message}`);
+  }
 };
 
 const unfollowUser = async (followerId, followedId) => {
-  if (!followedId || !followerId) {
-    throw new Error("IDs required for follower and followed users!");
-  }
+  try {
+    if (!followedId || !followerId) {
+      throw new Error("IDs required for follower and followed users!");
+    }
 
-  return await unfollow(followerId, followedId);
+    return await unfollow(followerId, followedId);
+  } catch (err) {
+    throw new Error(`Failed to unfollow user: ${err.message}`);
+  }
 };
 
 const isFollowing = async (followerId, followedId) => {
-  if (!followedId || !followerId) {
-    throw new Error("IDs required for follower and followed users!");
-  }
+  try {
+    if (!followedId || !followerId) {
+      throw new Error("IDs required for follower and followed users!");
+    }
 
-  return await getFollowingInfo(followerId, followedId);
+    return await getFollowingInfo(followerId, followedId);
+  } catch (err) {
+    throw new Error(`Failed to check following status: ${err.message}`);
+  }
 };
 
 const retrieveFollowers = async (userId) => {
-  if (!userId) {
-    throw new Error("User ID is required!");
-  }
+  try {
+    if (!userId) {
+      throw new Error("User ID is required!");
+    }
 
-  return await getFollowers(userId);
+    return await getFollowers(userId);
+  } catch (err) {
+    throw new Error(`Failed to retrieve followers: ${err.message}`);
+  }
 };
 
 const retrieveFollowings = async (userId) => {
-  if (!userId) {
-    throw new Error("User ID is required!");
-  }
+  try {
+    if (!userId) {
+      throw new Error("User ID is required!");
+    }
 
-  return await getFollowings(userId);
+    return await getFollowings(userId);
+  } catch (err) {
+    throw new Error(`Failed to retrieve followings: ${err.message}`);
+  }
 };
 
 export {
