@@ -125,3 +125,12 @@ td {
   font-weight: bold;
   text-align: center;
 }
+
+.photo-container {
+  display: block;
+  text-align: center;
+}
+
+.follow-unfollow-button {
+  margin: 100px 0 100px 50px;
+}

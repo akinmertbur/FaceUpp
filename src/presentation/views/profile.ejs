@@ -3,13 +3,16 @@
   <a href="/">Home</a>
   <% if (locals.user) { %>
     <div class="first-section">
-      <% if (profilePicture) { %>
-        <div class="photo-gallery">
-          <div class="photo-item">
+      <div class="photo-gallery">
+        <div class="photo-item">
+          <% if (locals.profilePicture) { %>
             <img id="profile-picture" src="<%= profilePicture %>" alt="Profile Picture">
-          </div>
+          <% } else { %>
+            <img id="profile-picture" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Profile Picture">
+          <% } %>
         </div>
-      <% } %>
+      </div>
+
       <div class="username-bio">
         <h1><%= user.username %></h1>
         <div class="bio">
@@ -17,8 +20,8 @@
         </div>
       </div>
       <div class="followings-followers">
-        <button id="followings-button" onclick="toggleFollowingsPanel()" ><%= followings.length %> Followings</button>
-        <button id="followers-button" onclick="toggleFollowersPanel()" ><%= followers.length %> Followers</button>
+        <button id="followings-button" class="btn btn-dark" onclick="toggleFollowingsPanel()" ><%= followings.length %> Followings</button>
+        <button id="followers-button" class="btn btn-dark" onclick="toggleFollowersPanel()" ><%= followers.length %> Followers</button>
       </div>
       <div class="followings-followers-container">
         <div id="followings-container" class="followings-list hide">
@@ -47,11 +50,11 @@
   <% } %>
 </div>
 <div class="second-section">
-  <button id="editBioButton" onclick="toggleHideBio()">Edit Bio</button>
-  <button id="editUsernameButton" onclick="toggleHideUsername()">Edit Username</button>
-  <button id="editEmailButton" onclick="toggleHideEmail()">Edit Email</button>
-  <button id="editPasswordButton" onclick="toggleHidePassword()">Edit Password</button>
-  <button id="addProfilePictureButton" onclick="toggleHideProfilePicture()">Add Profile Picture</button>
+  <button id="editBioButton" class="btn btn-dark" onclick="toggleHideBio()">Edit Bio</button>
+  <button id="editUsernameButton" class="btn btn-dark" onclick="toggleHideUsername()">Edit Username</button>
+  <button id="editEmailButton" class="btn btn-dark" onclick="toggleHideEmail()">Edit Email</button>
+  <button id="editPasswordButton" class="btn btn-dark" onclick="toggleHidePassword()">Edit Password</button>
+  <button id="addProfilePictureButton" class="btn btn-dark" onclick="toggleHideProfilePicture()">Add Profile Picture</button>
 </div>
 
 <form action="/api/users/editBio" method="POST" onsubmit="return validateBioForm()">
@@ -94,13 +97,38 @@
   <button id="saveProfilePictureButton" type="submit" class="btn btn-dark hide">Save</button>
 </form>
 
-<% if (photos && photos.length > 0) { %>
+<% if (photos_info && photos && photos.length > 0) { %>
   <div class="photo-gallery">
-    <% photos.forEach(photo => { %>
-      <div class="photo-item">
-        <img src="<%= photo.localUrl %>" alt="Photo">
+    <% for(let i = 0; i<photos.length; i++) { %>
+      <div class="photo-container">
+        <div class="photo-item">
+          <img src="<%= photos[i].localUrl %>" alt="Photo">
+        </div>
+        <div class="photo-bio">
+          <p><%= photos_info[i].caption  %></p>
+        </div>
+        <div class="photo-buttons">
+          <% if(locals.likeDetails[i]) { %>
+            <form action="/api/likes/unlike" method="POST">
+              <div class="form-group">
+                <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+              </div>
+              <button type="submit" class="btn btn-dark">Unlike</button>
+            </form>
+          <% } else { %>
+            <form action="/api/likes/like" method="POST">
+              <div class="form-group">
+                <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+              </div>
+              <button type="submit" class="btn btn-dark">Like</button>
+            </form>
+          <% } %>
+          <button class="btn btn-dark">Add Comment</button>
+        </div>
       </div>
-    <% }) %>
+    <% } %>
   </div>
 <% } else { %>
   <p>No photos available.</p>

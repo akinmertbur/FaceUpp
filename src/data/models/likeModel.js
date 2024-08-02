@@ -19,7 +19,7 @@ const Like = sequelize.define(
     },
   },
   {
-    timestamps: true,
+    timestamps: false,
   }
 );
 

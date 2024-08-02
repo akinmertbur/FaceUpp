@@ -1,50 +1,85 @@
 <%- include('partials/header') %>
+
+<a href="/">Home</a>
 <% if (locals.user) { %>
-  <% if (profilePicture) { %>
+  <div class="first-section">
     <div class="photo-gallery">
       <div class="photo-item">
-        <img src="<%= profilePicture %>" alt="Profile Picture">
+        <% if (locals.profilePicture) { %>
+          <img id="profile-picture" src="<%= profilePicture %>" alt="Profile Picture">
+        <% } else { %>
+          <img id="profile-picture" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Profile Picture">
+        <% } %>
       </div>
     </div>
-  <% } %>
-  <h1><%= user.username %></h1>
-  <p><%= user.bio %></p>
-
-  <% if(locals.following) { %>
-    <div>
-      <form action="/api/following/unfollow" method="POST">
-        <div class="form-group">
-          <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+    
+    <div class="username-bio">
+      <h1><%= user.username %></h1>
+      <div class="bio">
+        <p><%= user.bio %></p>
+      </div>
+    </div>
+    
+    <div class="follow-unfollow-button">
+      <% if(locals.following) { %>
+        <div>
+          <form action="/api/following/unfollow" method="POST">
+            <div class="form-group">
+              <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+            </div>
+            <button type="submit" class="btn btn-dark">Unfollow</button>
+          </form>
         </div>
-        <button type="submit" class="btn btn-dark">Unfollow</button>
-      </form>
+      <% } else { %>
+        <div>
+          <form action="/api/following/follow" method="POST">
+            <div class="form-group">
+              <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+            </div>
+            <button type="submit" class="btn btn-dark">Follow</button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+  </div>
+  <% if (photos_info && photos && photos.length > 0) { %>
+    <div class="photo-gallery">
+      <% for(let i = 0; i<photos.length; i++) { %>
+        <div class="photo-container">
+          <div class="photo-item">
+            <img src="<%= photos[i].localUrl %>" alt="Photo">
+          </div>
+          <div class="photo-bio">
+            <p><%= photos_info[i].caption  %></p>
+          </div>
+          <div class="photo-buttons">
+            <% if(locals.likeDetails[i]) { %>
+              <form action="/api/likes/unlike" method="POST">
+                <div class="form-group">
+                  <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                  <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+                </div>
+                <button type="submit" class="btn btn-dark">Unlike</button>
+              </form>
+            <% } else { %>
+              <form action="/api/likes/like" method="POST">
+                <div class="form-group">
+                  <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                  <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+                </div>
+                <button type="submit" class="btn btn-dark">Like</button>
+              </form>
+            <% } %>
+            <button class="btn btn-dark">Add Comment</button>
+          </div>
+        </div>
+      <% } %>
     </div>
   <% } else { %>
-    <div>
-      <form action="/api/following/follow" method="POST">
-        <div class="form-group">
-          <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
-        </div>
-        <button type="submit" class="btn btn-dark">Follow</button>
-      </form>
-    </div>
+    <p>No photos available.</p>
   <% } %>
 <% } %>
 
-<% if (photos && photos.length > 0) { %>
-  <div class="photo-gallery">
-    <% photos.forEach(photo => { %>
-      <div class="photo-item">
-        <img src="<%= photo.localUrl %>" alt="Photo">
-      </div>
-    <% }) %>
-  </div>
-<% } else { %>
-  <p>No photos available.</p>
-<% } %>
-<a href="/">Home</a>
 
-<script>
-  
-</script>
+
 <%- include('partials/footer') %>

@@ -13,6 +13,7 @@ import {
   retrieveFollowers,
   retrieveFollowings,
 } from "../../business/services/followService.js";
+import { retrieveLikeInfo } from "../../business/services/likeService.js";
 import { log, error } from "../../utils/logger.js";
 import { ensureAuthenticated } from "../../middleware/authMiddleware.js";
 
@@ -48,9 +49,10 @@ router.get("/profile", ensureAuthenticated, async (req, res) => {
     const photos = await retrievePhotos(user.id);
     const localPhotos = await downloadPhotos(photos);
     const profilePictureUrl = await retrieveProfilePicture(user.id);
-    const profilePictureLocalUrl = await downloadProfilePicture(
-      profilePictureUrl
-    );
+    const profilePictureLocalUrl = profilePictureUrl
+      ? await downloadProfilePicture(profilePictureUrl)
+      : null;
+
     const followers = await retrieveFollowers(user.id);
     const followings = await retrieveFollowings(user.id);
 
@@ -68,12 +70,20 @@ router.get("/profile", ensureAuthenticated, async (req, res) => {
       })
     );
 
+    const likeDetails = await Promise.all(
+      photos.map(async (photo) => {
+        return await retrieveLikeInfo(req.user.id, photo.id);
+      })
+    );
+
     res.render("profile.ejs", {
       photos: localPhotos,
+      photos_info: photos,
       profilePicture: profilePictureLocalUrl,
       user,
       followings: followingsDetail,
       followers: followersDetail,
+      likeDetails,
     });
 
     cleanUpLocalFiles();
@@ -103,11 +113,19 @@ router.get("/userProfile/:userId", ensureAuthenticated, async (req, res) => {
         ? await downloadProfilePicture(profilePictureUrl)
         : null;
 
+      const likeDetails = await Promise.all(
+        photos.map(async (photo) => {
+          return await retrieveLikeInfo(req.user.id, photo.id);
+        })
+      );
+
       res.render("userProfile.ejs", {
         photos: localPhotos,
+        photos_info: photos,
         profilePicture: profilePictureLocalUrl,
         user,
         following,
+        likeDetails,
       });
 
       cleanUpLocalFiles();
