@@ -13,7 +13,10 @@ import {
   retrieveFollowers,
   retrieveFollowings,
 } from "../../business/services/followService.js";
-import { retrieveLikeInfo } from "../../business/services/likeService.js";
+import {
+  retrieveLikeInfo,
+  retrieveLikesByPhoto,
+} from "../../business/services/likeService.js";
 import { log, error } from "../../utils/logger.js";
 import { ensureAuthenticated } from "../../middleware/authMiddleware.js";
 
@@ -76,6 +79,22 @@ router.get("/profile", ensureAuthenticated, async (req, res) => {
       })
     );
 
+    const _likesByPhoto = await Promise.all(
+      photos.map(async (photo) => {
+        return await retrieveLikesByPhoto(photo.id);
+      })
+    );
+
+    let likesByPhoto = [];
+    for (let i = 0; i < _likesByPhoto.length; i++) {
+      likesByPhoto[i] = []; // Initialize the sub-array
+      let promises = _likesByPhoto[i].map(async (like) => {
+        let user = await findUserById(like.userId);
+        return user.username;
+      });
+      likesByPhoto[i] = await Promise.all(promises);
+    }
+
     res.render("profile.ejs", {
       photos: localPhotos,
       photos_info: photos,
@@ -84,6 +103,7 @@ router.get("/profile", ensureAuthenticated, async (req, res) => {
       followings: followingsDetail,
       followers: followersDetail,
       likeDetails,
+      likesByPhoto,
     });
 
     cleanUpLocalFiles();

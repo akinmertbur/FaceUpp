@@ -97,7 +97,7 @@
   <button id="saveProfilePictureButton" type="submit" class="btn btn-dark hide">Save</button>
 </form>
 
-<% if (photos_info && photos && photos.length > 0) { %>
+<% if (likesByPhoto && photos_info && photos && photos.length > 0) { %>
   <div class="photo-gallery">
     <% for(let i = 0; i<photos.length; i++) { %>
       <div class="photo-container">
@@ -106,6 +106,9 @@
         </div>
         <div class="photo-bio">
           <p><%= photos_info[i].caption  %></p>
+        </div>
+        <div>
+          <button id="likes-count<%= i %>" class="btn btn-dark" onclick="toggleLikesPanel('<%= i %>')"><%= likesByPhoto[i].length %> Likes</button>
         </div>
         <div class="photo-buttons">
           <% if(locals.likeDetails[i]) { %>
@@ -126,6 +129,11 @@
             </form>
           <% } %>
           <button class="btn btn-dark">Add Comment</button>
+        </div>
+        <div id="likes-panel<%= i %>" class="hide">
+          <% likesByPhoto[i].map(x => { %>
+            <p><%= x %></p>       
+          <% }); %>  
         </div>
       </div>
     <% } %>
@@ -232,6 +240,16 @@
       followerContainer.classList.remove('hide');
     } else {
       followerContainer.classList.add('hide');
+    }
+  }
+
+  function toggleLikesPanel(i) {
+    const likesPanel = document.getElementById(`likes-panel${i}`);
+
+    if(likesPanel.classList.contains('hide')) {
+      likesPanel.classList.remove('hide');
+    } else {
+      likesPanel.classList.add('hide');
     }
   }
 
