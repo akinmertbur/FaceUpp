@@ -97,7 +97,7 @@
   <button id="saveProfilePictureButton" type="submit" class="btn btn-dark hide">Save</button>
 </form>
 
-<% if (likesByPhoto && photos_info && photos && photos.length > 0) { %>
+<% if (commentsByUsername && commentsByPhoto && likesByPhoto && photos_info && photos && photos.length > 0) { %>
   <div class="photo-gallery">
     <% for(let i = 0; i<photos.length; i++) { %>
       <div class="photo-container">
@@ -128,7 +128,31 @@
               <button type="submit" class="btn btn-dark">Like</button>
             </form>
           <% } %>
-          <button class="btn btn-dark">Add Comment</button>
+          <div id="comments-panel<%= i %>" class="hide comments-panel">
+            <% for (let j = 0; j < commentsByPhoto[i].length; j++) { %>
+              <div class="comment-detail">
+                <p>- <%= commentsByUsername[i][j] %>:</p>
+                <p> <%= commentsByPhoto[i][j].comment %> </p>
+                <form action="/api/comments/remove" method="POST">
+                  <div class="form-group">
+                    <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                    <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+                    <input hidden type="text" class="form-control" name="comment" value="<%= commentsByPhoto[i][j].comment %>">
+                  </div>
+                  <button type="submit" class="btn btn-dark">delete comment</button>
+                </form>
+              </div>
+            <% } %>
+          </div>
+          <form action="/api/comments/add" method="POST">
+            <div class="form-group">
+              <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+              <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+              <input type="text" name="comment" placeholder="Type comment..." required>
+            </div>
+            <button type="submit" class="btn btn-dark">Add Comment</button>
+          </form>
+          <button id="showCommentButton<%= i %>" class="btn btn-dark" onclick="toggleCommentsPanel('<%= i %>')">Show All Comments</button>
         </div>
         <div id="likes-panel<%= i %>" class="hide">
           <% likesByPhoto[i].map(x => { %>
@@ -250,6 +274,19 @@
       likesPanel.classList.remove('hide');
     } else {
       likesPanel.classList.add('hide');
+    }
+  }
+
+  function toggleCommentsPanel(i) {
+    const commentsPanel = document.getElementById(`comments-panel${i}`);
+    const commentButton = document.getElementById(`showCommentButton${i}`);
+
+    if(commentsPanel.classList.contains('hide')) {
+      commentsPanel.classList.remove('hide');
+      commentButton.innerHTML = "Hide All Comments";
+    } else {
+      commentsPanel.classList.add('hide');
+      commentButton.innerHTML = "Show All Comments";
     }
   }
 

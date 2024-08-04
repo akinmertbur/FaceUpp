@@ -19,6 +19,7 @@ import {
 } from "../../business/services/likeService.js";
 import { log, error } from "../../utils/logger.js";
 import { ensureAuthenticated } from "../../middleware/authMiddleware.js";
+import { retrieveCommentsByPhoto } from "../../business/services/commentService.js";
 
 const router = express.Router();
 
@@ -95,6 +96,22 @@ router.get("/profile", ensureAuthenticated, async (req, res) => {
       likesByPhoto[i] = await Promise.all(promises);
     }
 
+    const commentsByPhoto = await Promise.all(
+      photos.map(async (photo) => {
+        return await retrieveCommentsByPhoto(photo.id);
+      })
+    );
+
+    let commentsByUsername = [];
+    for (let i = 0; i < commentsByPhoto.length; i++) {
+      commentsByUsername[i] = []; // Initialize the sub-array
+      let promises = commentsByPhoto[i].map(async (comment) => {
+        let user = await findUserById(comment.userId);
+        return user.username;
+      });
+      commentsByUsername[i] = await Promise.all(promises);
+    }
+
     res.render("profile.ejs", {
       photos: localPhotos,
       photos_info: photos,
@@ -104,6 +121,8 @@ router.get("/profile", ensureAuthenticated, async (req, res) => {
       followers: followersDetail,
       likeDetails,
       likesByPhoto,
+      commentsByPhoto,
+      commentsByUsername,
     });
 
     cleanUpLocalFiles();

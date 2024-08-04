@@ -134,3 +134,25 @@ td {
 .follow-unfollow-button {
   margin: 100px 0 100px 50px;
 }
+
+.comment-detail {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+}
+
+.comments-panel button {
+  padding: 1px;
+  border: none;
+  margin: 0 0 10px 10px;
+  background-color: #f44336;
+}
+
+.comments-panel button:hover {
+  background-color: red;
+}
+
+.comments-panel p {
+  margin: 0;
+}
