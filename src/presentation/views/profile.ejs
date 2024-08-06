@@ -97,7 +97,7 @@
   <button id="saveProfilePictureButton" type="submit" class="btn btn-dark hide">Save</button>
 </form>
 
-<% if (commentsByUsername && commentsByPhoto && likesByPhoto && photos_info && photos && photos.length > 0) { %>
+<% if (commentsByPhotoUsername && commentsByPhoto && likesByPhotoUsername && photos_info && photos && photos.length > 0) { %>
   <div class="photo-gallery">
     <% for(let i = 0; i<photos.length; i++) { %>
       <div class="photo-container">
@@ -108,7 +108,7 @@
           <p><%= photos_info[i].caption  %></p>
         </div>
         <div>
-          <button id="likes-count<%= i %>" class="btn btn-dark" onclick="toggleLikesPanel('<%= i %>')"><%= likesByPhoto[i].length %> Likes</button>
+          <button id="likes-count<%= i %>" class="btn btn-dark" onclick="toggleLikesPanel('<%= i %>')"><%= likesByPhotoUsername[i].length %> Likes</button>
         </div>
         <div class="photo-buttons">
           <% if(locals.likeDetails[i]) { %>
@@ -131,7 +131,7 @@
           <div id="comments-panel<%= i %>" class="hide comments-panel">
             <% for (let j = 0; j < commentsByPhoto[i].length; j++) { %>
               <div class="comment-detail">
-                <p>- <%= commentsByUsername[i][j] %>:</p>
+                <p>- <%= commentsByPhotoUsername[i][j] %>:</p>
                 <p> <%= commentsByPhoto[i][j].comment %> </p>
                 <form action="/api/comments/remove" method="POST">
                   <div class="form-group">
@@ -155,7 +155,7 @@
           <button id="showCommentButton<%= i %>" class="btn btn-dark" onclick="toggleCommentsPanel('<%= i %>')">Show All Comments</button>
         </div>
         <div id="likes-panel<%= i %>" class="hide">
-          <% likesByPhoto[i].map(x => { %>
+          <% likesByPhotoUsername[i].map(x => { %>
             <p><%= x %></p>       
           <% }); %>  
         </div>
