@@ -8,7 +8,7 @@
         <% if (locals.profilePicture) { %>
           <img id="profile-picture" src="<%= profilePicture %>" alt="Profile Picture">
         <% } else { %>
-          <img id="profile-picture" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Profile Picture">
+          <img id="profile-picture" src="/images/blank-profile-picture.jpg" alt="Profile Picture">
         <% } %>
       </div>
     </div>
@@ -40,6 +40,32 @@
           </form>
         </div>
       <% } %>
+    </div>
+    <div class="followings-followers">
+      <button id="followings-button" class="btn btn-dark" onclick="toggleFollowingsPanel()" ><%= followings.length %> Followings</button>
+      <button id="followers-button" class="btn btn-dark" onclick="toggleFollowersPanel()" ><%= followers.length %> Followers</button>
+    </div>
+    <div class="followings-followers-container">
+      <div id="followings-container" class="followings-list hide">
+        <p>Followings</p>
+        <% if (followings.length > 0) { %>
+          <ul>
+            <% followings.forEach(user => { %>
+              <li><a href="/userProfile/<%= user.id %>"><%= user.username %></a></li>
+            <% }) %>
+          </ul>
+        <% } %>
+      </div>
+      <div id="followers-container" class="followers-list hide">
+        <p>Followers</p>
+        <% if (followers.length > 0) { %>
+          <ul>
+            <% followers.forEach(user => { %>
+              <li><a href="/userProfile/<%= user.id %>"><%= user.username %></a></li>
+            <% }) %>
+          </ul>
+        <% } %>
+      </div>
     </div>
   </div>
   <% if (photos_info && photos && photos.length > 0) { %>
@@ -80,6 +106,26 @@
   <% } %>
 <% } %>
 
+<script>
+  function toggleFollowingsPanel() {
+    const followingContainer = document.getElementById("followings-container");
 
+    if(followingContainer.classList.contains('hide')) {
+      followingContainer.classList.remove('hide');
+    } else {
+      followingContainer.classList.add('hide');
+    }
+  }
+
+  function toggleFollowersPanel() {
+    const followerContainer = document.getElementById("followers-container");
+
+    if(followerContainer.classList.contains('hide')) {
+      followerContainer.classList.remove('hide');
+    } else {
+      followerContainer.classList.add('hide');
+    }
+  }
+</script>
 
 <%- include('partials/footer') %>

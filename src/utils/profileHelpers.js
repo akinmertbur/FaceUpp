@@ -50,23 +50,22 @@ const getLikesByPhoto = async (photos) => {
   );
 };
 
-// getLikesByPhotoUsername returns the username of
+// getLikesByPhotoUserDetails returns the details of
 // the users who like the photos
-const getLikesByPhotoUsername = async (photos) => {
+const getLikesByPhotoUserDetails = async (photos) => {
   const likesByPhoto = await getLikesByPhoto(photos);
-  let likesByPhotoUsername = [];
+  let likesByPhotoUserDetails = [];
   for (let i = 0; i < likesByPhoto.length; i++) {
-    likesByPhotoUsername[i] = await Promise.all(
+    likesByPhotoUserDetails[i] = await Promise.all(
       likesByPhoto[i].map(async (like) => {
-        let user = await findUserById(like.userId);
-        return user.username;
+        return await findUserById(like.userId);
       })
     );
   }
-  return likesByPhotoUsername;
+  return likesByPhotoUserDetails;
 };
 
-// getCommentsByPhoto returns the comments by photo
+// getCommentsByPhoto returns the comments by each photos
 const getCommentsByPhoto = async (photos) => {
   return Promise.all(
     photos.map(async (photo) => {
@@ -75,20 +74,19 @@ const getCommentsByPhoto = async (photos) => {
   );
 };
 
-// commentsByPhotoUsername contains the username of
+// getCommentsByPhotoUserDetails returns the details of
 // the users who comment the photos
-const getCommentsByPhotoUsername = async (photos) => {
+const getCommentsByPhotoUserDetails = async (photos) => {
   const commentsByPhoto = await getCommentsByPhoto(photos);
-  let commentsByPhotoUsername = [];
+  let commentsByPhotoUserDetails = [];
   for (let i = 0; i < commentsByPhoto.length; i++) {
-    commentsByPhotoUsername[i] = await Promise.all(
+    commentsByPhotoUserDetails[i] = await Promise.all(
       commentsByPhoto[i].map(async (comment) => {
-        let user = await findUserById(comment.userId);
-        return user.username;
+        return await findUserById(comment.userId);
       })
     );
   }
-  return commentsByPhotoUsername;
+  return commentsByPhotoUserDetails;
 };
 
 const getProfilePicture = async (userId) => {
@@ -104,8 +102,8 @@ export {
   getFollowersDetail,
   getFollowingsDetail,
   getLikeDetails,
-  getLikesByPhotoUsername,
+  getLikesByPhotoUserDetails,
   getCommentsByPhoto,
-  getCommentsByPhotoUsername,
+  getCommentsByPhotoUserDetails,
   getProfilePicture,
 };

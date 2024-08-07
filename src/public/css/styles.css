@@ -17,7 +17,7 @@ body {
 .photo-gallery {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: center;
   height: 80%;
 }
 .photo-item {
@@ -25,8 +25,8 @@ body {
   margin-left: 50px;
 }
 .photo-item img {
-  width: 300px;
-  height: 300px;
+  width: 900px;
+  height: 650px;
 }
 
 .hide {
@@ -71,7 +71,7 @@ td {
 }
 
 .followings-followers {
-  margin: 70px 10px;
+  margin: 70px 10px 0 50px;
   height: 40px;
 }
 
@@ -82,7 +82,8 @@ td {
 }
 
 .bio {
-  max-width: 50%;
+  max-width: 200px;
+  height: fit-content;
   margin: 0 30px;
 }
 
@@ -129,6 +130,7 @@ td {
 .photo-container {
   display: block;
   text-align: center;
+  margin: 50px 0 50px 0;
 }
 
 .follow-unfollow-button {
@@ -140,6 +142,10 @@ td {
   justify-content: center;
   gap: 10px;
   align-items: center;
+}
+
+.comments-panel {
+  background-color: #fff;
 }
 
 .comments-panel button {
@@ -155,4 +161,235 @@ td {
 
 .comments-panel p {
   margin: 0;
+}
+
+.like-button {
+  background-color: #d3d2d2;
+  border: none;
+  color: #000;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.like-button.liked {
+  background-color: #ff4081;
+  color: #fff;
+}
+
+.like-button:hover {
+  background-color: #fa75a1;
+}
+
+.add-comment-button {
+  background-color: #d3d2d2;
+  border: none;
+  color: #000;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.add-comment-button:hover {
+  background-color: #909090;
+}
+
+.show-all-comments-button {
+  background-color: #d3d2d2;
+  border: none;
+  color: #000;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.show-all-comments-button:hover {
+  background-color: #909090;
+}
+
+.comment-delete-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: rgb(20, 20, 20);
+  border: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
+  cursor: pointer;
+  transition-duration: 0.3s;
+  overflow: hidden;
+  position: relative;
+}
+
+.deleteCommentSvgIcon {
+  width: 12px;
+  transition-duration: 0.3s;
+}
+
+.deleteCommentSvgIcon path {
+  fill: white;
+}
+
+.comment-delete-button:hover {
+  width: 140px;
+  border-radius: 50px;
+  transition-duration: 0.3s;
+  background-color: rgb(255, 69, 69);
+  align-items: center;
+}
+
+.comment-delete-button:hover .deleteCommentSvgIcon {
+  width: 50px;
+  transition-duration: 0.3s;
+  transform: translateY(60%);
+}
+
+.comment-delete-button::before {
+  position: absolute;
+  top: -20px;
+  content: "Delete";
+  color: white;
+  transition-duration: 0.3s;
+  font-size: 2px;
+}
+
+.comment-delete-button:hover::before {
+  font-size: 13px;
+  opacity: 1;
+  transform: translateY(30px);
+  transition-duration: 0.3s;
+}
+
+.followers-followings-button {
+  font-family: PlusJakartaSans, -apple-system, BlinkMacSystemFont, Segoe UI,
+    Roboto, Oxygen, Cantarell, Helvetica Neue, Ubuntu, sans-serif;
+  font-size: 1rem;
+  align-items: center;
+  height: 48px;
+  border-radius: 0.4rem;
+  font-weight: 600;
+  padding: 0 1.2rem;
+  color: #ddd;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0.5rem 1rem rgba(143, 142, 142, 0.15) !important;
+  background: #000000;
+  margin-left: 5px;
+}
+
+.followers-followings {
+  font-size: 0.8rem;
+  color: #7f7f7f;
+}
+
+.followers-followings-button:hover {
+  background: #2b2a2a;
+}
+
+likes-count-button {
+  color: #090909;
+  padding: 0.7em 1.7em;
+  font-size: 18px;
+  border-radius: 0.5em;
+  background: #e8e8e8;
+  cursor: pointer;
+  border: 1px solid #e8e8e8;
+  transition: all 0.3s;
+  box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+}
+
+likes-count-button:active {
+  color: #666;
+  box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+}
+
+.comment-add-container {
+  display: inline;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.buttons-container button {
+  width: fit-content;
+  height: fit-content;
+  margin: 25px 5px 25px 5px;
+}
+
+.likes-panel {
+  background-color: darkgray;
+  width: fit-content;
+  height: fit-content;
+  text-align: center;
+  min-width: 100px;
+  min-height: 100px;
+}
+
+.likes {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.comment-form input[type="text"] {
+  transition: width 0.4s ease-in-out;
+}
+
+.comment-form input[type="text"]:focus {
+  width: 100%;
+}
+
+.edit-forms form {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.edit-forms input {
+  transition: width 0.4s ease-in-out;
+  width: 80%;
+}
+
+.edit-buttons {
+  background-color: #d3d2d2;
+  border: none;
+  color: #000;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.edit-buttons:hover {
+  background-color: #909090;
 }

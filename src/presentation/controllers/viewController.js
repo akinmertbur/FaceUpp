@@ -21,9 +21,9 @@ import {
   getFollowersDetail,
   getFollowingsDetail,
   getLikeDetails,
-  getLikesByPhotoUsername,
+  getLikesByPhotoUserDetails,
   getCommentsByPhoto,
-  getCommentsByPhotoUsername,
+  getCommentsByPhotoUserDetails,
 } from "../../utils/profileHelpers.js";
 import { error } from "../../utils/logger.js";
 
@@ -36,9 +36,11 @@ const renderProfile = async (req, res) => {
     const followings = await getFollowingsDetail(user.id);
     const followers = await getFollowersDetail(user.id);
     const likeDetails = await getLikeDetails(user.id, photos);
-    const likesByPhotoUsername = await getLikesByPhotoUsername(photos);
+    const likesByPhotoUserDetails = await getLikesByPhotoUserDetails(photos);
     const commentsByPhoto = await getCommentsByPhoto(photos);
-    const commentsByPhotoUsername = await getCommentsByPhotoUsername(photos);
+    const commentsByPhotoUserDetails = await getCommentsByPhotoUserDetails(
+      photos
+    );
 
     res.render("profile.ejs", {
       photos: localPhotos,
@@ -48,9 +50,9 @@ const renderProfile = async (req, res) => {
       followings,
       followers,
       likeDetails,
-      likesByPhotoUsername,
+      likesByPhotoUserDetails,
       commentsByPhoto,
-      commentsByPhotoUsername,
+      commentsByPhotoUserDetails,
     });
 
     cleanUpLocalFiles();
@@ -73,6 +75,8 @@ const renderUserProfile = async (req, res) => {
       const localPhotos = await downloadPhotos(photos);
       const profilePicture = await getProfilePicture(userId);
       const likeDetails = await getLikeDetails(req.user.id, photos);
+      const followings = await getFollowingsDetail(user.id);
+      const followers = await getFollowersDetail(user.id);
 
       res.render("userProfile.ejs", {
         photos: localPhotos,
@@ -81,6 +85,8 @@ const renderUserProfile = async (req, res) => {
         user,
         following,
         likeDetails,
+        followings,
+        followers,
       });
 
       cleanUpLocalFiles();

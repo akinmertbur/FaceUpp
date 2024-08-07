@@ -8,7 +8,7 @@
           <% if (locals.profilePicture) { %>
             <img id="profile-picture" src="<%= profilePicture %>" alt="Profile Picture">
           <% } else { %>
-            <img id="profile-picture" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Profile Picture">
+            <img id="profile-picture" src="/images/blank-profile-picture.jpg" alt="Profile Picture">
           <% } %>
         </div>
       </div>
@@ -20,8 +20,8 @@
         </div>
       </div>
       <div class="followings-followers">
-        <button id="followings-button" class="btn btn-dark" onclick="toggleFollowingsPanel()" ><%= followings.length %> Followings</button>
-        <button id="followers-button" class="btn btn-dark" onclick="toggleFollowersPanel()" ><%= followers.length %> Followers</button>
+        <button id="followings-button" class="followers-followings-button">Followings<span class="followers-followings">&nbsp; <%= followings.length %> </span></button>
+        <button id="followers-button" class="followers-followings-button">Followers<span class="followers-followings">&nbsp; <%= followers.length %> </span></button>
       </div>
       <div class="followings-followers-container">
         <div id="followings-container" class="followings-list hide">
@@ -50,54 +50,46 @@
   <% } %>
 </div>
 <div class="second-section">
-  <button id="editBioButton" class="btn btn-dark" onclick="toggleHideBio()">Edit Bio</button>
-  <button id="editUsernameButton" class="btn btn-dark" onclick="toggleHideUsername()">Edit Username</button>
-  <button id="editEmailButton" class="btn btn-dark" onclick="toggleHideEmail()">Edit Email</button>
-  <button id="editPasswordButton" class="btn btn-dark" onclick="toggleHidePassword()">Edit Password</button>
-  <button id="addProfilePictureButton" class="btn btn-dark" onclick="toggleHideProfilePicture()">Add Profile Picture</button>
+  <button id="editBioButton" class="edit-buttons" onclick="toggleHideBio()">Edit Bio</button>
+  <button id="editUsernameButton" class="edit-buttons" onclick="toggleHideUsername()">Edit Username</button>
+  <button id="editEmailButton" class="edit-buttons" onclick="toggleHideEmail()">Edit Email</button>
+  <button id="editPasswordButton" class="edit-buttons" onclick="toggleHidePassword()">Edit Password</button>
+  <button id="addProfilePictureButton" class="edit-buttons" onclick="toggleHideProfilePicture()">Add Profile Picture</button>
 </div>
 
-<form action="/api/users/editBio" method="POST" onsubmit="return validateBioForm()">
-  <div class="form-group">
+<div class="edit-forms">
+  <form action="/api/users/editBio" method="POST" onsubmit="return validateBioForm()">
     <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
-    <input id="editBioInputField" type="text" class="form-control hide" name="bioText" required>
-  </div>
-  <button id="saveBioButton" type="submit" class="btn btn-dark hide">Save</button>
-</form>
-
-<form action="/api/users/editUsername" method="POST" onsubmit="return validateUsernameForm()">
-  <div class="form-group">
+    <input id="editBioInputField" type="text" class="form-control hide" name="bioText" placeholder="Enter the Bio.." required>
+    <button id="saveBioButton" type="submit" class="edit-buttons hide">Save</button>
+  </form>
+  
+  <form action="/api/users/editUsername" method="POST" onsubmit="return validateUsernameForm()">
     <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
-    <input id="editUsernameInputField" type="text" class="form-control hide" name="username" required>
-  </div>
-  <button id="saveUsernameButton" type="submit" class="btn btn-dark hide">Save</button>
-</form>
-
-<form action="/api/users/editEmail" method="POST" onsubmit="return validateEmailForm()">
-  <div class="form-group">
+    <input id="editUsernameInputField" type="text" class="form-control hide" name="username" placeholder="Enter the Username.." required>
+    <button id="saveUsernameButton" type="submit" class="edit-buttons hide">Save</button>
+  </form>
+  
+  <form action="/api/users/editEmail" method="POST" onsubmit="return validateEmailForm()">
     <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
-    <input id="editEmailInputField" type="email" class="form-control hide" name="email" required>
-  </div>
-  <button id="saveEmailButton" type="submit" class="btn btn-dark hide">Save</button>
-</form>
-
-<form action="/api/auth/editPassword" method="POST" onsubmit="return validatePasswordForm()">
-  <div class="form-group">
-    <input id="editPasswordInputField" type="password" class="form-control hide" name="password" required>
-  </div>
-  <button id="savePasswordButton" type="submit" class="btn btn-dark hide">Save</button>
-</form>
-
-<form action="/api/users/editProfilePicture" method="POST" enctype="multipart/form-data" onsubmit="return validateAddProfilePictureForm()">
-  <div class="form-group">
+    <input id="editEmailInputField" type="email" class="form-control hide" name="email" placeholder="Enter the Email.." required>
+    <button id="saveEmailButton" type="submit" class="edit-buttons hide">Save</button>
+  </form>
+  
+  <form action="/api/auth/editPassword" method="POST" onsubmit="return validatePasswordForm()">
+    <input id="editPasswordInputField" type="password" class="form-control hide" name="password" placeholder="Enter the Password.." required>
+    <button id="savePasswordButton" type="submit" class="edit-buttons hide">Save</button>
+  </form>
+  
+  <form action="/api/users/editProfilePicture" method="POST" enctype="multipart/form-data" onsubmit="return validateAddProfilePictureForm()">
     <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
     <input type="file" class="form-control hide" id="photo" name="photo" accept="image/*">
     <div class="invalid-feedback" id="photoError"></div>
-  </div>
-  <button id="saveProfilePictureButton" type="submit" class="btn btn-dark hide">Save</button>
-</form>
+    <button id="saveProfilePictureButton" type="submit" class="edit-buttons hide">Save</button>
+  </form>
+</div>
 
-<% if (commentsByPhotoUsername && commentsByPhoto && likesByPhotoUsername && photos_info && photos && photos.length > 0) { %>
+<% if (commentsByPhotoUserDetails && commentsByPhoto && likesByPhotoUserDetails && photos_info && photos && photos.length > 0) { %>
   <div class="photo-gallery">
     <% for(let i = 0; i<photos.length; i++) { %>
       <div class="photo-container">
@@ -107,31 +99,42 @@
         <div class="photo-bio">
           <p><%= photos_info[i].caption  %></p>
         </div>
+        <div class="likes">
+          <div id="likes-panel<%= i %>" class="likes-panel hide">
+            <p style="font-weight: bold;">Likes</p>
+            <% likesByPhotoUserDetails[i].map(user => { %>
+              <p>🩷 <a href="/userProfile/<%= user.id %>"><%= user.username %></a></p>       
+            <% }); %>  
+          </div>
+        </div>
         <div>
-          <button id="likes-count<%= i %>" class="btn btn-dark" onclick="toggleLikesPanel('<%= i %>')"><%= likesByPhotoUsername[i].length %> Likes</button>
+          <button id="likes-count<%= i %>" class="likes-count-button" onclick="toggleLikesPanel('<%= i %>')"><%= likesByPhotoUserDetails[i].length %> Likes</button>
         </div>
         <div class="photo-buttons">
-          <% if(locals.likeDetails[i]) { %>
-            <form action="/api/likes/unlike" method="POST">
-              <div class="form-group">
-                <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
-                <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
-              </div>
-              <button type="submit" class="btn btn-dark">Unlike</button>
-            </form>
-          <% } else { %>
-            <form action="/api/likes/like" method="POST">
-              <div class="form-group">
-                <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
-                <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
-              </div>
-              <button type="submit" class="btn btn-dark">Like</button>
-            </form>
-          <% } %>
+          <div class="buttons-container">
+            <% if(locals.likeDetails[i]) { %>
+              <form action="/api/likes/unlike" method="POST">
+                <div>
+                  <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                  <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+                </div>
+                <button type="submit" id="disLikeButton<%= i %>" class="like-button liked">Liked</button>
+              </form>
+            <% } else { %>
+              <form action="/api/likes/like" method="POST">
+                <div>
+                  <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                  <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+                </div>
+                <button type="submit" id="likeButton<%= i %>" class="like-button">Like</button>
+              </form>
+            <% } %>
+            <button id="showCommentButton<%= i %>" class="show-all-comments-button" onclick="toggleCommentsPanel('<%= i %>')">Show All Comments</button>
+          </div>
           <div id="comments-panel<%= i %>" class="hide comments-panel">
             <% for (let j = 0; j < commentsByPhoto[i].length; j++) { %>
               <div class="comment-detail">
-                <p>- <%= commentsByPhotoUsername[i][j] %>:</p>
+                <p>💬 <a href="/userProfile/<%= commentsByPhotoUserDetails[i][j].id %>"><%= commentsByPhotoUserDetails[i][j].username %></a>:</p>
                 <p> <%= commentsByPhoto[i][j].comment %> </p>
                 <form action="/api/comments/remove" method="POST">
                   <div class="form-group">
@@ -139,25 +142,23 @@
                     <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
                     <input hidden type="text" class="form-control" name="comment" value="<%= commentsByPhoto[i][j].comment %>">
                   </div>
-                  <button type="submit" class="btn btn-dark">delete comment</button>
+                  <button type="submit" class="comment-delete-button">
+                    <svg viewBox="0 0 448 512" class="deleteCommentSvgIcon"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path></svg>
+                  </button>
                 </form>
               </div>
             <% } %>
           </div>
-          <form action="/api/comments/add" method="POST">
-            <div class="form-group">
-              <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
-              <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
-              <input type="text" name="comment" placeholder="Type comment..." required>
-            </div>
-            <button type="submit" class="btn btn-dark">Add Comment</button>
-          </form>
-          <button id="showCommentButton<%= i %>" class="btn btn-dark" onclick="toggleCommentsPanel('<%= i %>')">Show All Comments</button>
-        </div>
-        <div id="likes-panel<%= i %>" class="hide">
-          <% likesByPhotoUsername[i].map(x => { %>
-            <p><%= x %></p>       
-          <% }); %>  
+          <div class="comment-form">
+            <form action="/api/comments/add" method="POST">
+              <div class="form-group">
+                <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+                <input type="text" name="comment" placeholder="Type comment..." required>
+                <button type="submit" class="add-comment-button">Add Comment</button>
+              </div>      
+            </form>
+          </div>
         </div>
       </div>
     <% } %>
@@ -167,86 +168,127 @@
 <% } %>
 
 <script>
+
+  function hideButtons() {
+    const editBioButton = document.getElementById('editBioButton');
+    const editUsernameButton = document.getElementById('editUsernameButton');
+    const editEmailButton = document.getElementById('editEmailButton');
+    const editPasswordButton = document.getElementById('editPasswordButton');
+    const addProfilePictureButton = document.getElementById('addProfilePictureButton');
+
+    editBioButton.classList.add('hide');
+    editUsernameButton.classList.add('hide');
+    editEmailButton.classList.add('hide');
+    editPasswordButton.classList.add('hide');
+    addProfilePictureButton.classList.add('hide');
+  }
+
+  function showButtons() {
+    const editBioButton = document.getElementById('editBioButton');
+    const editUsernameButton = document.getElementById('editUsernameButton');
+    const editEmailButton = document.getElementById('editEmailButton');
+    const editPasswordButton = document.getElementById('editPasswordButton');
+    const addProfilePictureButton = document.getElementById('addProfilePictureButton');
+
+    editBioButton.classList.remove('hide');
+    editUsernameButton.classList.remove('hide');
+    editEmailButton.classList.remove('hide');
+    editPasswordButton.classList.remove('hide');
+    addProfilePictureButton.classList.remove('hide');
+  }
+
   function toggleHideBio() {
     const editBioInputField = document.getElementById('editBioInputField');
     const saveBioButton = document.getElementById('saveBioButton');
-    const editBioButton = document.getElementById('editBioButton');
-
+    
     if (editBioInputField.classList.contains('hide')) {
       editBioInputField.classList.remove('hide');
       saveBioButton.classList.remove('hide');
-      editBioButton.classList.add('hide');
+      hideButtons();
     } else {
       editBioInputField.classList.add('hide');
       saveBioButton.classList.add('hide');
-      editBioButton.classList.remove('hide');
+      showButtons();
     }
   }
   
   function toggleHideUsername() {
     const editUsernameInputField = document.getElementById('editUsernameInputField');
     const saveUsernameButton = document.getElementById('saveUsernameButton');
-    const editUsernameButton = document.getElementById('editUsernameButton');
 
     if (editUsernameInputField.classList.contains('hide')) {
       editUsernameInputField.classList.remove('hide');
       saveUsernameButton.classList.remove('hide');
-      editUsernameButton.classList.add('hide');
+      hideButtons();
     } else {
       editUsernameInputField.classList.add('hide');
       saveUsernameButton.classList.add('hide');
-      editUsernameButton.classList.remove('hide');
+      showButtons();
     }
   }
   
   function toggleHideEmail() {
     const editEmailInputField = document.getElementById('editEmailInputField');
     const saveEmailButton = document.getElementById('saveEmailButton');
-    const editEmailButton = document.getElementById('editEmailButton');
 
     if (editEmailInputField.classList.contains('hide')) {
       editEmailInputField.classList.remove('hide');
       saveEmailButton.classList.remove('hide');
-      editEmailButton.classList.add('hide');
+      hideButtons();
     } else {
       editEmailInputField.classList.add('hide');
       saveEmailButton.classList.add('hide');
-      editEmailButton.classList.remove('hide');
+      showButtons();
     }
   }
   
   function toggleHidePassword() {
     const editPasswordInputField = document.getElementById('editPasswordInputField');
     const savePasswordButton = document.getElementById('savePasswordButton');
-    const editPasswordButton = document.getElementById('editPasswordButton');
 
     if (editPasswordInputField.classList.contains('hide')) {
       editPasswordInputField.classList.remove('hide');
       savePasswordButton.classList.remove('hide');
-      editPasswordButton.classList.add('hide');
+      hideButtons();
     } else {
       editPasswordInputField.classList.add('hide');
       savePasswordButton.classList.add('hide');
-      editPasswordButton.classList.remove('hide');
+      showButtons();
     }
   }
 
   function toggleHideProfilePicture() {
-    const addProfilePictureButton = document.getElementById('addProfilePictureButton');
     const saveProfilePictureButton = document.getElementById('saveProfilePictureButton');
     const photo = document.getElementById('photo');
 
     if (photo.classList.contains('hide')) {
       photo.classList.remove('hide');
       saveProfilePictureButton.classList.remove('hide');
-      addProfilePictureButton.classList.add('hide');
+      hideButtons();
     } else {
       photo.classList.add('hide');
       saveProfilePictureButton.classList.add('hide');
-      addProfilePictureButton.classList.remove('hide');
+      showButtons();
     }
   }
 
+  document.getElementById('followings-button').addEventListener('mouseover', function() {
+    document.getElementById('followings-container').classList.remove('hide');
+  });
+
+  document.getElementById('followings-button').addEventListener('mouseout', function() {
+    document.getElementById('followings-container').classList.add('hide');
+  });
+
+  document.getElementById('followers-button').addEventListener('mouseover', function() {
+    document.getElementById('followers-container').classList.remove('hide');
+  });
+
+  document.getElementById('followers-button').addEventListener('mouseout', function() {
+    document.getElementById('followers-container').classList.add('hide');
+  });
+  
+  /*
   function toggleFollowingsPanel() {
     const followingContainer = document.getElementById("followings-container");
 
@@ -266,6 +308,7 @@
       followerContainer.classList.add('hide');
     }
   }
+  */
 
   function toggleLikesPanel(i) {
     const likesPanel = document.getElementById(`likes-panel${i}`);
