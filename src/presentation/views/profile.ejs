@@ -1,4 +1,5 @@
 <%- include('partials/header') %>
+
 <div>
   <% if (locals.user) { %>
     <div class="first-section">
@@ -45,126 +46,127 @@
         </div>
       </div>
     </div>
+    <div class="second-section">
+      <button id="editBioButton" class="edit-buttons" onclick="toggleHideBio()">Edit Bio</button>
+      <button id="editUsernameButton" class="edit-buttons" onclick="toggleHideUsername()">Edit Username</button>
+      <button id="editEmailButton" class="edit-buttons" onclick="toggleHideEmail()">Edit Email</button>
+      <button id="editPasswordButton" class="edit-buttons" onclick="toggleHidePassword()">Edit Password</button>
+      <button id="addProfilePictureButton" class="edit-buttons" onclick="toggleHideProfilePicture()">Add Profile Picture</button>
+    </div>
     
-  <% } %>
-</div>
-<div class="second-section">
-  <button id="editBioButton" class="edit-buttons" onclick="toggleHideBio()">Edit Bio</button>
-  <button id="editUsernameButton" class="edit-buttons" onclick="toggleHideUsername()">Edit Username</button>
-  <button id="editEmailButton" class="edit-buttons" onclick="toggleHideEmail()">Edit Email</button>
-  <button id="editPasswordButton" class="edit-buttons" onclick="toggleHidePassword()">Edit Password</button>
-  <button id="addProfilePictureButton" class="edit-buttons" onclick="toggleHideProfilePicture()">Add Profile Picture</button>
-</div>
-
-<div class="edit-forms">
-  <form action="/api/users/editBio" method="POST" onsubmit="return validateBioForm()">
-    <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
-    <input id="editBioInputField" type="text" class="form-control hide" name="bioText" placeholder="Enter the Bio.." required>
-    <button id="saveBioButton" type="submit" class="edit-buttons hide">Save</button>
-  </form>
-  
-  <form action="/api/users/editUsername" method="POST" onsubmit="return validateUsernameForm()">
-    <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
-    <input id="editUsernameInputField" type="text" class="form-control hide" name="username" placeholder="Enter the Username.." required>
-    <button id="saveUsernameButton" type="submit" class="edit-buttons hide">Save</button>
-  </form>
-  
-  <form action="/api/users/editEmail" method="POST" onsubmit="return validateEmailForm()">
-    <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
-    <input id="editEmailInputField" type="email" class="form-control hide" name="email" placeholder="Enter the Email.." required>
-    <button id="saveEmailButton" type="submit" class="edit-buttons hide">Save</button>
-  </form>
-  
-  <form action="/api/auth/editPassword" method="POST" onsubmit="return validatePasswordForm()">
-    <input id="editPasswordInputField" type="password" class="form-control hide" name="password" placeholder="Enter the Password.." required>
-    <button id="savePasswordButton" type="submit" class="edit-buttons hide">Save</button>
-  </form>
-  
-  <form action="/api/users/editProfilePicture" method="POST" enctype="multipart/form-data" onsubmit="return validateAddProfilePictureForm()">
-    <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
-    <input type="file" class="form-control hide" id="photo" name="photo" accept="image/*">
-    <div class="invalid-feedback" id="photoError"></div>
-    <button id="saveProfilePictureButton" type="submit" class="edit-buttons hide">Save</button>
-  </form>
-</div>
-
-<% if (commentsByPhotoUserDetails && commentsByPhoto && likesByPhotoUserDetails && photos_info && photos && photos.length > 0) { %>
-  <div class="photo-gallery">
-    <% for(let i = 0; i<photos.length; i++) { %>
-      <div class="photo-container">
-        <div class="photo-item">
-          <img src="<%= photos[i].localUrl %>" alt="Photo">
-        </div>
-        <div class="photo-bio">
-          <p><%= photos_info[i].caption  %></p>
-        </div>
-        <div class="likes">
-          <div id="likes-panel<%= i %>" class="likes-panel hide">
-            <p style="font-weight: bold;">Likes</p>
-            <% likesByPhotoUserDetails[i].map(user => { %>
-              <p>🩷 <a href="/userProfile/<%= user.id %>"><%= user.username %></a></p>       
-            <% }); %>  
-          </div>
-        </div>
-        <div>
-          <button id="likes-count<%= i %>" class="likes-count-button" onclick="toggleLikesPanel('<%= i %>')"><%= likesByPhotoUserDetails[i].length %> Likes</button>
-        </div>
-        <div class="photo-buttons">
-          <div class="buttons-container">
-            <% if(locals.likeDetails[i]) { %>
-              <form action="/api/likes/unlike" method="POST">
-                <div>
-                  <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
-                  <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
-                </div>
-                <button type="submit" id="disLikeButton<%= i %>" class="like-button liked">Liked</button>
-              </form>
-            <% } else { %>
-              <form action="/api/likes/like" method="POST">
-                <div>
-                  <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
-                  <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
-                </div>
-                <button type="submit" id="likeButton<%= i %>" class="like-button">Like</button>
-              </form>
-            <% } %>
-            <button id="showCommentButton<%= i %>" class="show-all-comments-button" onclick="toggleCommentsPanel('<%= i %>')">Show All Comments</button>
-          </div>
-          <div id="comments-panel<%= i %>" class="hide comments-panel">
-            <% for (let j = 0; j < commentsByPhoto[i].length; j++) { %>
-              <div class="comment-detail">
-                <p>💬 <a href="/userProfile/<%= commentsByPhotoUserDetails[i][j].id %>"><%= commentsByPhotoUserDetails[i][j].username %></a>:</p>
-                <p> <%= commentsByPhoto[i][j].comment %> </p>
-                <form action="/api/comments/remove" method="POST">
+    <div class="edit-forms">
+      <form action="/api/users/editBio" method="POST" onsubmit="return validateBioForm()">
+        <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
+        <input id="editBioInputField" type="text" class="form-control hide" name="bioText" placeholder="Enter the Bio.." required>
+        <button id="saveBioButton" type="submit" class="edit-buttons hide">Save</button>
+      </form>
+      
+      <form action="/api/users/editUsername" method="POST" onsubmit="return validateUsernameForm()">
+        <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
+        <input id="editUsernameInputField" type="text" class="form-control hide" name="username" placeholder="Enter the Username.." required>
+        <button id="saveUsernameButton" type="submit" class="edit-buttons hide">Save</button>
+      </form>
+      
+      <form action="/api/users/editEmail" method="POST" onsubmit="return validateEmailForm()">
+        <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
+        <input id="editEmailInputField" type="email" class="form-control hide" name="email" placeholder="Enter the Email.." required>
+        <button id="saveEmailButton" type="submit" class="edit-buttons hide">Save</button>
+      </form>
+      
+      <form action="/api/auth/editPassword" method="POST" onsubmit="return validatePasswordForm()">
+        <input id="editPasswordInputField" type="password" class="form-control hide" name="password" placeholder="Enter the Password.." required>
+        <button id="savePasswordButton" type="submit" class="edit-buttons hide">Save</button>
+      </form>
+      
+      <form action="/api/users/editProfilePicture" method="POST" enctype="multipart/form-data" onsubmit="return validateAddProfilePictureForm()">
+        <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
+        <input type="file" class="form-control hide" id="photo" name="photo" accept="image/*">
+        <div class="invalid-feedback" id="photoError"></div>
+        <button id="saveProfilePictureButton" type="submit" class="edit-buttons hide">Save</button>
+      </form>
+    </div>
+    
+    <% if (commentsByPhotoUserDetails && commentsByPhoto && likesByPhotoUserDetails && photos_info && photos && photos.length > 0) { %>
+      <div class="photo-gallery">
+        <% for(let i = 0; i<photos.length; i++) { %>
+          <div class="photo-container">
+            <div class="photo-item">
+              <img src="<%= photos[i].localUrl %>" alt="Photo">
+            </div>
+            <div class="photo-bio">
+              <p><%= photos_info[i].caption  %></p>
+            </div>
+            <div class="likes">
+              <div id="likes-panel<%= i %>" class="likes-panel hide">
+                <p style="font-weight: bold;">Likes</p>
+                <% likesByPhotoUserDetails[i].map(user => { %>
+                  <p>🩷 <a href="/userProfile/<%= user.id %>"><%= user.username %></a></p>       
+                <% }); %>  
+              </div>
+            </div>
+            <div>
+              <button id="likes-count<%= i %>" class="likes-count-button" onclick="toggleLikesPanel('<%= i %>')"><%= likesByPhotoUserDetails[i].length %> Likes</button>
+            </div>
+            <div class="photo-buttons">
+              <div class="buttons-container">
+                <% if(locals.likeDetails[i]) { %>
+                  <form action="/api/likes/unlike" method="POST">
+                    <div>
+                      <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                      <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+                    </div>
+                    <button type="submit" id="disLikeButton<%= i %>" class="like-button liked">Liked</button>
+                  </form>
+                <% } else { %>
+                  <form action="/api/likes/like" method="POST">
+                    <div>
+                      <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                      <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+                    </div>
+                    <button type="submit" id="likeButton<%= i %>" class="like-button">Like</button>
+                  </form>
+                <% } %>
+                <button id="showCommentButton<%= i %>" class="show-all-comments-button" onclick="toggleCommentsPanel('<%= i %>')">Show All Comments</button>
+              </div>
+              <div id="comments-panel<%= i %>" class="hide comments-panel">
+                <% for (let j = 0; j < commentsByPhoto[i].length; j++) { %>
+                  <div class="comment-detail">
+                    <p>💬 <a href="/userProfile/<%= commentsByPhotoUserDetails[i][j].id %>"><%= commentsByPhotoUserDetails[i][j].username %></a>:</p>
+                    <p> <%= commentsByPhoto[i][j].comment %> </p>
+                    <form action="/api/comments/remove" method="POST">
+                      <div class="form-group">
+                        <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                        <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+                        <input hidden type="text" class="form-control" name="comment" value="<%= commentsByPhoto[i][j].comment %>">
+                      </div>
+                      <button type="submit" class="comment-delete-button">
+                        <svg viewBox="0 0 448 512" class="deleteCommentSvgIcon"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path></svg>
+                      </button>
+                    </form>
+                  </div>
+                <% } %>
+              </div>
+              <div class="comment-form">
+                <form action="/api/comments/add" method="POST">
                   <div class="form-group">
                     <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
                     <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
-                    <input hidden type="text" class="form-control" name="comment" value="<%= commentsByPhoto[i][j].comment %>">
-                  </div>
-                  <button type="submit" class="comment-delete-button">
-                    <svg viewBox="0 0 448 512" class="deleteCommentSvgIcon"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path></svg>
-                  </button>
+                    <input type="text" name="comment" placeholder="Type comment..." required>
+                    <button type="submit" class="add-comment-button">Add Comment</button>
+                  </div>      
                 </form>
               </div>
-            <% } %>
+            </div>
           </div>
-          <div class="comment-form">
-            <form action="/api/comments/add" method="POST">
-              <div class="form-group">
-                <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
-                <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
-                <input type="text" name="comment" placeholder="Type comment..." required>
-                <button type="submit" class="add-comment-button">Add Comment</button>
-              </div>      
-            </form>
-          </div>
-        </div>
+        <% } %>
+      </div>
+    <% } else { %>
+      <div class="photo-msg">
+        <p>No photos available</p>
       </div>
     <% } %>
-  </div>
-<% } else { %>
-  <p>No photos available.</p>
-<% } %>
+  <% } %>
+</div>
 
 <script>
 

@@ -4,27 +4,9 @@ import {
   downloadPhotos,
   cleanUpLocalFiles,
 } from "../../business/services/photoService.js";
-import { retrieveProfilePicture } from "../../business/services/userService.js";
 import { findUserById } from "../../business/services/authService.js";
-import {
-  isFollowing,
-  retrieveFollowers,
-  retrieveFollowings,
-} from "../../business/services/followService.js";
-import {
-  retrieveLikeInfo,
-  retrieveLikesByPhoto,
-} from "../../business/services/likeService.js";
-import { retrieveCommentsByPhoto } from "../../business/services/commentService.js";
-import {
-  getProfilePicture,
-  getFollowersDetail,
-  getFollowingsDetail,
-  getLikeDetails,
-  getLikesByPhotoUserDetails,
-  getCommentsByPhoto,
-  getCommentsByPhotoUserDetails,
-} from "../../utils/profileHelpers.js";
+import { isFollowing } from "../../business/services/followService.js";
+import { getProfileData } from "../../utils/profileHelpers.js";
 import { error } from "../../utils/logger.js";
 
 const renderProfile = async (req, res) => {
@@ -32,28 +14,14 @@ const renderProfile = async (req, res) => {
     const user = req.user;
     const photos = await retrievePhotos(user.id);
     const localPhotos = await downloadPhotos(photos);
-    const profilePicture = await getProfilePicture(user.id);
-    const followings = await getFollowingsDetail(user.id);
-    const followers = await getFollowersDetail(user.id);
-    const likeDetails = await getLikeDetails(user.id, photos);
-    const likesByPhotoUserDetails = await getLikesByPhotoUserDetails(photos);
-    const commentsByPhoto = await getCommentsByPhoto(photos);
-    const commentsByPhotoUserDetails = await getCommentsByPhotoUserDetails(
-      photos
+    const profileData = await getProfileData(
+      user.id,
+      localPhotos,
+      photos,
+      user
     );
 
-    res.render("profile.ejs", {
-      photos: localPhotos,
-      photos_info: photos,
-      user,
-      profilePicture,
-      followings,
-      followers,
-      likeDetails,
-      likesByPhotoUserDetails,
-      commentsByPhoto,
-      commentsByPhotoUserDetails,
-    });
+    res.render("profile.ejs", profileData);
 
     cleanUpLocalFiles();
   } catch (err) {
@@ -65,32 +33,25 @@ const renderProfile = async (req, res) => {
 const renderUserProfile = async (req, res) => {
   try {
     const userId = req.params.userId;
+    const reqUserId = req.user.id;
 
-    if (req.user.id == userId) {
+    if (reqUserId == userId) {
       res.redirect("/profile");
-    } else {
-      const following = await isFollowing(req.user.id, userId);
-      const user = await findUserById(userId);
-      const photos = await retrievePhotos(userId);
-      const localPhotos = await downloadPhotos(photos);
-      const profilePicture = await getProfilePicture(userId);
-      const likeDetails = await getLikeDetails(req.user.id, photos);
-      const followings = await getFollowingsDetail(user.id);
-      const followers = await getFollowersDetail(user.id);
-
-      res.render("userProfile.ejs", {
-        photos: localPhotos,
-        photos_info: photos,
-        profilePicture,
-        user,
-        following,
-        likeDetails,
-        followings,
-        followers,
-      });
-
-      cleanUpLocalFiles();
     }
+
+    const following = await isFollowing(reqUserId, userId);
+    const user = await findUserById(userId);
+    const photos = await retrievePhotos(userId);
+    const localPhotos = await downloadPhotos(photos);
+    const profileData = await getProfileData(userId, localPhotos, photos, user);
+
+    res.render("userProfile.ejs", {
+      ...profileData,
+      following,
+      reqUserId,
+    });
+
+    cleanUpLocalFiles();
   } catch (err) {
     error(`Failed to render user profile: ${err.message}`);
     res.status(500).json({ message: "Error rendering user profile." });

@@ -26,7 +26,7 @@
             <div class="form-group">
               <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
             </div>
-            <button type="submit" class="btn btn-dark">Unfollow</button>
+            <button type="submit">Unfollow</button>
           </form>
         </div>
       <% } else { %>
@@ -35,14 +35,14 @@
             <div class="form-group">
               <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
             </div>
-            <button type="submit" class="btn btn-dark">Follow</button>
+            <button type="submit">Follow</button>
           </form>
         </div>
       <% } %>
     </div>
     <div class="followings-followers">
-      <button id="followings-button" class="btn btn-dark" onclick="toggleFollowingsPanel()" ><%= followings.length %> Followings</button>
-      <button id="followers-button" class="btn btn-dark" onclick="toggleFollowersPanel()" ><%= followers.length %> Followers</button>
+      <button id="followings-button" class="followers-followings-button">Followings<span class="followers-followings">&nbsp; <%= followings.length %> </span></button>
+      <button id="followers-button" class="followers-followings-button">Followers<span class="followers-followings">&nbsp; <%= followers.length %> </span></button>
     </div>
     <div class="followings-followers-container">
       <div id="followings-container" class="followings-list hide">
@@ -67,7 +67,7 @@
       </div>
     </div>
   </div>
-  <% if (photos_info && photos && photos.length > 0) { %>
+  <% if (commentsByPhotoUserDetails && commentsByPhoto && likesByPhotoUserDetails && photos_info && photos && photos.length > 0) { %>
     <div class="photo-gallery">
       <% for(let i = 0; i<photos.length; i++) { %>
         <div class="photo-container">
@@ -77,52 +77,118 @@
           <div class="photo-bio">
             <p><%= photos_info[i].caption  %></p>
           </div>
+          <div class="likes">
+            <div id="likes-panel<%= i %>" class="likes-panel hide">
+              <p style="font-weight: bold;">Likes</p>
+              <% likesByPhotoUserDetails[i].map(user => { %>
+                <p>🩷 <a href="/userProfile/<%= user.id %>"><%= user.username %></a></p>       
+              <% }); %>  
+            </div>
+          </div>
+          <div>
+            <button id="likes-count<%= i %>" class="likes-count-button" onclick="toggleLikesPanel('<%= i %>')"><%= likesByPhotoUserDetails[i].length %> Likes</button>
+          </div>
           <div class="photo-buttons">
-            <% if(locals.likeDetails[i]) { %>
-              <form action="/api/likes/unlike" method="POST">
+            <div class="buttons-container">
+              <% if(locals.likeDetails[i]) { %>
+                <form action="/api/likes/unlike" method="POST">
+                  <div>
+                    <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                    <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+                  </div>
+                  <button type="submit" id="disLikeButton<%= i %>" class="like-button liked">Liked</button>
+                </form>
+              <% } else { %>
+                <form action="/api/likes/like" method="POST">
+                  <div>
+                    <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                    <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+                  </div>
+                  <button type="submit" id="likeButton<%= i %>" class="like-button">Like</button>
+                </form>
+              <% } %>
+              <button id="showCommentButton<%= i %>" class="show-all-comments-button" onclick="toggleCommentsPanel('<%= i %>')">Show All Comments</button>
+            </div>
+            <div id="comments-panel<%= i %>" class="hide comments-panel">
+              <% for (let j = 0; j < commentsByPhoto[i].length; j++) { %>
+                <div class="comment-detail">
+                  <p>💬 <a href="/userProfile/<%= commentsByPhotoUserDetails[i][j].id %>"><%= commentsByPhotoUserDetails[i][j].username %></a>:</p>
+                  <p> <%= commentsByPhoto[i][j].comment %> </p>
+                  <% if(locals.reqUserId) { %>
+                    <% if(commentsByPhotoUserDetails[i][j].id == reqUserId) { %>
+                      <form action="/api/comments/remove" method="POST">
+                        <div class="form-group">
+                          <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                          <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+                          <input hidden type="text" class="form-control" name="comment" value="<%= commentsByPhoto[i][j].comment %>">
+                        </div>
+                        <button type="submit" class="comment-delete-button">
+                          <svg viewBox="0 0 448 512" class="deleteCommentSvgIcon"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path></svg>
+                        </button>
+                      </form>
+                    <% } %>
+                  <% } %>
+                </div>
+              <% } %>
+            </div>
+            <div class="comment-form">
+              <form action="/api/comments/add" method="POST">
                 <div class="form-group">
                   <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
                   <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
-                </div>
-                <button type="submit" class="btn btn-dark">Unlike</button>
+                  <input type="text" name="comment" placeholder="Type comment..." required>
+                  <button type="submit" class="add-comment-button">Add Comment</button>
+                </div>      
               </form>
-            <% } else { %>
-              <form action="/api/likes/like" method="POST">
-                <div class="form-group">
-                  <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
-                  <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
-                </div>
-                <button type="submit" class="btn btn-dark">Like</button>
-              </form>
-            <% } %>
-            <button class="btn btn-dark">Add Comment</button>
+            </div>
           </div>
         </div>
       <% } %>
     </div>
   <% } else { %>
-    <p>No photos available.</p>
+    <div class="photo-msg">
+      <p>No photos available</p>
+    </div>
   <% } %>
 <% } %>
 
 <script>
-  function toggleFollowingsPanel() {
-    const followingContainer = document.getElementById("followings-container");
+  document.getElementById('followings-button').addEventListener('mouseover', function() {
+    document.getElementById('followings-container').classList.remove('hide');
+  });
 
-    if(followingContainer.classList.contains('hide')) {
-      followingContainer.classList.remove('hide');
+  document.getElementById('followings-button').addEventListener('mouseout', function() {
+    document.getElementById('followings-container').classList.add('hide');
+  });
+
+  document.getElementById('followers-button').addEventListener('mouseover', function() {
+    document.getElementById('followers-container').classList.remove('hide');
+  });
+
+  document.getElementById('followers-button').addEventListener('mouseout', function() {
+    document.getElementById('followers-container').classList.add('hide');
+  });
+
+  function toggleLikesPanel(i) {
+    const likesPanel = document.getElementById(`likes-panel${i}`);
+
+    if(likesPanel.classList.contains('hide')) {
+      likesPanel.classList.remove('hide');
     } else {
-      followingContainer.classList.add('hide');
+      likesPanel.classList.add('hide');
     }
   }
 
-  function toggleFollowersPanel() {
-    const followerContainer = document.getElementById("followers-container");
+  function toggleCommentsPanel(i) {
+    const commentsPanel = document.getElementById(`comments-panel${i}`);
+    const commentButton = document.getElementById(`showCommentButton${i}`);
 
-    if(followerContainer.classList.contains('hide')) {
-      followerContainer.classList.remove('hide');
+    if(commentsPanel.classList.contains('hide')) {
+      commentsPanel.classList.remove('hide');
+      commentButton.innerHTML = "Hide All Comments";
     } else {
-      followerContainer.classList.add('hide');
+      commentsPanel.classList.add('hide');
+      commentButton.innerHTML = "Show All Comments";
     }
   }
 </script>
