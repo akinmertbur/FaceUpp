@@ -2,6 +2,10 @@ body {
   background-color: #e8ecef;
 }
 
+main {
+  min-height: 150vh;
+}
+
 .centered {
   padding-top: 200px;
   text-align: center;
@@ -392,4 +396,33 @@ likes-count-button:active {
 
 .edit-buttons:hover {
   background-color: #909090;
+}
+
+.header-element {
+  margin-right: 528px;
+  font-size: 1.5rem;
+  display: flex;
+  gap: 1px;
+  color: #000;
+}
+
+.header-element img {
+  width: 65px;
+  height: 45px;
+}
+
+.nav-button {
+  background-color: #d3d2d2;
+}
+
+.nav-button:hover {
+  background-color: #909090;
+}
+
+.nav-buttons a {
+  color: #000;
+}
+
+.footer-buttons a {
+  color: #000;
 }

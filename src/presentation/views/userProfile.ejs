@@ -1,6 +1,5 @@
 <%- include('partials/header') %>
 
-<a href="/">Home</a>
 <% if (locals.user) { %>
   <div class="first-section">
     <div class="photo-gallery">
@@ -8,7 +7,7 @@
         <% if (locals.profilePicture) { %>
           <img id="profile-picture" src="<%= profilePicture %>" alt="Profile Picture">
         <% } else { %>
-          <img id="profile-picture" src="/images/blank-profile-picture.jpg" alt="Profile Picture">
+          <img id="profile-picture" src="/svg/profile.svg" alt="Profile Picture">
         <% } %>
       </div>
     </div>
