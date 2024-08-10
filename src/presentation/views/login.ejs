@@ -9,6 +9,15 @@
         <div class="card-body">
           <!-- Makes POST request to /login route -->
           <form id="loginForm" action="/api/auth/login" method="POST" onsubmit="return validateLoginForm()">
+            <% if (locals.successMsg) { %>
+              <div class="alert alert-success">
+                <%= successMsg %>
+              </div>
+            <% } else if (locals.errorMsg) { %>
+              <div class="alert alert-danger">
+                <%= errorMsg %>
+              </div>
+            <% } %>
             <div class="form-group">
               <label for="email">Email</label>
               <input type="email" class="form-control" id="email" name="username" required>

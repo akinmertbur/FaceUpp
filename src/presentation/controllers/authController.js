@@ -41,16 +41,16 @@ const registerUserController = async (req, res) => {
   const { email, username, password } = req.body;
   try {
     await registerUser(email, username, password);
-    res.redirect("/login");
+    res.redirect(`/login?success=You are successfully register to Face App!`);
   } catch (err) {
     error(`Error registering user: ${err.message}`);
-    res.status(500).json({ message: err.message });
+    res.status(500).redirect(`/register?errmsg=${err.message}`);
   }
 };
 
 const loginUserController = passport.authenticate("local", {
-  successRedirect: "/home",
-  failureRedirect: "/login",
+  successRedirect: "/home?success=Welcome to Face App!",
+  failureRedirect: `/login?errmsg=Email or password is wrong! Please try again!`,
 });
 
 const logoutUserController = (req, res) => {

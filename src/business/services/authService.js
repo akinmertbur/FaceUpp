@@ -9,7 +9,7 @@ import {
 
 const registerUser = async (email, username, password) => {
   const existingUser = await getUserByEmail(email);
-  if (existingUser) throw new Error("Email already in use");
+  if (existingUser) throw new Error("Email is already in use!");
 
   const hash = await bcrypt.hash(password, 10);
   await createUser({ email, username, password: hash });

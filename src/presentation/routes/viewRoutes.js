@@ -6,6 +6,8 @@ import {
   renderHome,
   renderAddContent,
   renderSearch,
+  renderRegister,
+  renderLogin,
 } from "../controllers/viewController.js";
 import { ensureAuthenticated } from "../../middleware/authMiddleware.js";
 
@@ -15,13 +17,9 @@ router.get("/", ensureAuthenticated, (req, res) => {
   res.redirect("/home");
 });
 
-router.get("/login", (req, res) => {
-  res.render("login.ejs");
-});
+router.get("/login", renderLogin);
 
-router.get("/register", (req, res) => {
-  res.render("register.ejs");
-});
+router.get("/register", renderRegister);
 
 router.get("/home", ensureAuthenticated, renderHome);
 

@@ -1,5 +1,11 @@
 <%- include('partials/header') %>
 
+<% if (locals.successMessage) { %>
+  <div style="text-align: center;" class="alert alert-success">
+    <%= successMessage %>
+  </div>
+<% } %>
+
 
 <div class="jumbotron centered">
   <div class="container">
@@ -13,11 +19,6 @@
     <a href="/addContent">Add Content</a>
     <a href="/profile">Profile</a>
     <a href="/api/auth/logout">Logout</a>
-    <% if (locals.successMessage) { %>
-      <div class="alert alert-success">
-        <%= successMessage %>
-      </div>
-    <% } %>
   </div>
 </div>
 

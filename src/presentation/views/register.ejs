@@ -1,4 +1,5 @@
 <%- include('partials/header') %>
+
 <div class="container mt-5">
   <h1>Register</h1>
 
@@ -8,6 +9,11 @@
         <div class="card-body">
           <!-- Makes POST request to /register route -->
           <form id="registerForm" action="/api/auth/register" method="POST" onsubmit="return validateForm()">
+            <% if (locals.errMsg) { %>
+              <div class="alert alert-danger">
+                <%= errMsg %>
+              </div>
+            <% } %>
             <div class="form-group">
               <label for="username">Username</label>
               <input type="text" class="form-control" id="username" name="username" required>

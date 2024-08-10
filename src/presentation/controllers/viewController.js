@@ -82,10 +82,23 @@ const renderSearch = (req, res) => {
   res.render("search.ejs", { errMsg });
 };
 
+const renderRegister = (req, res) => {
+  const errMsg = req.query.errmsg || "";
+  res.render("register.ejs", { errMsg });
+};
+
+const renderLogin = (req, res) => {
+  const successMsg = req.query.success || "";
+  const errorMsg = req.query.errmsg || "";
+  res.render("login.ejs", { successMsg, errorMsg });
+};
+
 export {
   renderProfile,
   renderUserProfile,
   renderHome,
   renderAddContent,
   renderSearch,
+  renderRegister,
+  renderLogin,
 };
