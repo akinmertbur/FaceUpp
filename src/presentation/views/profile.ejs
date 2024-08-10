@@ -46,6 +46,7 @@
         </div>
       </div>
     </div>
+    
     <div class="second-section">
       <button id="editBioButton" class="edit-buttons" onclick="toggleHideBio()">Edit Bio</button>
       <button id="editUsernameButton" class="edit-buttons" onclick="toggleHideUsername()">Edit Username</button>
@@ -53,6 +54,12 @@
       <button id="editPasswordButton" class="edit-buttons" onclick="toggleHidePassword()">Edit Password</button>
       <button id="addProfilePictureButton" class="edit-buttons" onclick="toggleHideProfilePicture()">Add Profile Picture</button>
     </div>
+
+    <% if (locals.errMsg) { %>
+      <div style="text-align: center;" class="alert alert-danger">
+        <%= errMsg %>
+      </div>
+    <% } %>
     
     <div class="edit-forms">
       <form action="/api/users/editBio" method="POST" onsubmit="return validateBioForm()">

@@ -29,7 +29,7 @@ const editBio = async (req, res) => {
     res.status(201).redirect("/profile");
   } catch (err) {
     error(`Failed to edit bio: ${err.message}`); // Log an error message if there's an exception
-    res.status(500).json({ message: err.message });
+    res.status(500).redirect(`/profile?errmsg=${err.message}`);
   }
 };
 
@@ -41,7 +41,7 @@ const editUsername = async (req, res) => {
     res.status(201).redirect("/profile");
   } catch (err) {
     error(`Failed to edit username: ${err.message}`);
-    res.status(500).json({ message: err.message });
+    res.status(500).redirect(`/profile?errmsg=${err.message}`);
   }
 };
 
@@ -53,7 +53,7 @@ const editEmail = async (req, res) => {
     res.status(201).redirect("/profile");
   } catch (err) {
     error(`Failed to edit email: ${err.message}`);
-    res.status(500).json({ message: err.message });
+    res.status(500).redirect(`/profile?errmsg=${err.message}`);
   }
 };
 
@@ -78,7 +78,7 @@ const editProfilePicture = async (req, res) => {
     res.status(201).redirect("/profile");
   } catch (err) {
     error(`Failed to add profile picture: ${err.message}`); // Log an error message if there's an exception
-    res.status(500).json({ message: err.message });
+    res.status(500).redirect(`/profile?errmsg=${err.message}`);
   }
 };
 

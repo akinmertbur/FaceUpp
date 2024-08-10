@@ -6,12 +6,12 @@
             <div class="alert alert-success">
               <%= errMsg %>
             </div>
-          <% } %>
-          <% if (locals.success) { %>
+        <% } %>
+        <% if (locals.success) { %>
             <div class="alert alert-success">
-              <%= success %>
+                <%= success %>
             </div>
-          <% } %>
+        <% } %>
         <form id="searchForm" action="/api/users/getUsers" method="post">
             <div class="form-group">
                 <label style="font-weight: bolder;" for="username">Username</label>

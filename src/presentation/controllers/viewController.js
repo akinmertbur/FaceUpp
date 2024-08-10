@@ -21,8 +21,9 @@ const renderProfile = async (req, res) => {
       user,
       null
     );
+    const errMsg = req.query.errmsg || "";
 
-    res.render("profile.ejs", profileData);
+    res.render("profile.ejs", { ...profileData, errMsg });
 
     cleanUpLocalFiles();
   } catch (err) {

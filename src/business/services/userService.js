@@ -53,7 +53,7 @@ const changeEmail = async (userId, email) => {
   const existingUser = await getUserByEmail(email);
 
   if (existingUser) {
-    throw new Error("Email already in use!");
+    throw new Error("Email is already in use!");
   }
 
   if (!userId) {

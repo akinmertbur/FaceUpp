@@ -70,7 +70,7 @@ const editPasswordController = async (req, res) => {
     res.redirect("/profile");
   } catch (err) {
     error(`Error changing password: ${err.message}`);
-    res.status(500).json({ message: err.message });
+    res.status(500).redirect(`/profile?errmsg=${err.message}`);
   }
 };
 
