@@ -1,9 +1,10 @@
 import express from "express";
 import { like, unlike } from "../controllers/likeController.js";
+import { valdiateLikeUnlike } from "../../middleware/validationMiddleware.js";
 
 const router = express.Router();
 
-router.post("/like", like);
-router.post("/unlike", unlike);
+router.post("/like", valdiateLikeUnlike, like);
+router.post("/unlike", valdiateLikeUnlike, unlike);
 
 export default router;
