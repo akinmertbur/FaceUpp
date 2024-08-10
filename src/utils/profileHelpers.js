@@ -140,15 +140,18 @@ const getProfilePicture = async (userId) => {
 };
 
 // Helper function to gather profile data
-const getProfileData = async (userId, localPhotos, photos, user) => {
+const getProfileData = async (userId, localPhotos, photos, user, reqUserId) => {
   try {
     const profilePicture = await getProfilePicture(userId);
     const followings = await getFollowingsDetail(userId);
     const followers = await getFollowersDetail(userId);
-    const likeDetails = await getLikeDetails(userId, photos);
     const likesByPhotoUserDetails = await getLikesByPhotoUserDetails(photos);
     const commentsByPhoto = await getCommentsByPhoto(photos);
     const commentsByPhotoUserDetails = await getCommentsByPhotoUserDetails(
+      photos
+    );
+    const likeDetails = await getLikeDetails(
+      reqUserId ? reqUserId : userId,
       photos
     );
 

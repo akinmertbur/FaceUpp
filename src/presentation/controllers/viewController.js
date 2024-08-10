@@ -18,7 +18,8 @@ const renderProfile = async (req, res) => {
       user.id,
       localPhotos,
       photos,
-      user
+      user,
+      null
     );
 
     res.render("profile.ejs", profileData);
@@ -43,7 +44,13 @@ const renderUserProfile = async (req, res) => {
     const user = await findUserById(userId);
     const photos = await retrievePhotos(userId);
     const localPhotos = await downloadPhotos(photos);
-    const profileData = await getProfileData(userId, localPhotos, photos, user);
+    const profileData = await getProfileData(
+      userId,
+      localPhotos,
+      photos,
+      user,
+      reqUserId
+    );
 
     res.render("userProfile.ejs", {
       ...profileData,
