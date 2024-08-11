@@ -32,12 +32,16 @@ const addPhoto = async (req, res) => {
 const editCaption = async (req, res) => {
   try {
     const { photoId, newCaption } = req.body;
-    await updateCaption(photoId, newCaption);
-    log(`Caption of the photo ID ${photoId} is edited`);
-    res.status(200).redirect("/profile");
+    const result = await updateCaption(photoId, newCaption);
+
+    if (result[0] === 0) {
+      return res.status(404).json({ message: "Photo not found" });
+    }
+    log(`Caption of the photo ID ${photoId} is updated`);
+    res.status(200).json({ caption: newCaption });
   } catch (err) {
-    error(`Failed to edit: ${err.message}`);
-    res.status(500).redirect(`/profile?errmsg=${err.message}`);
+    error(`Failed to update: ${err.message}`);
+    res.status(500).json({ message: "Error updating caption", err });
   }
 };
 

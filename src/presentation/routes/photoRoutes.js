@@ -14,6 +14,6 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 router.post("/", upload.single("photo"), validateAddPhoto, addPhoto);
-router.post("/editCaption", validateEditCaption, editCaption);
+router.patch("/editCaption", validateEditCaption, editCaption);
 
 export default router;
