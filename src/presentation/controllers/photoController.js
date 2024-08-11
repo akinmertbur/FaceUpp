@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import {
   insertPhoto,
   uploadPhotoToS3,
+  updateCaption,
 } from "../../business/services/photoService.js";
 import { log, error } from "../../utils/logger.js";
 
@@ -28,4 +29,16 @@ const addPhoto = async (req, res) => {
   }
 };
 
-export { addPhoto };
+const editCaption = async (req, res) => {
+  try {
+    const { photoId, newCaption } = req.body;
+    await updateCaption(photoId, newCaption);
+    log(`Caption of the photo ID ${photoId} is edited`);
+    res.status(200).redirect("/profile");
+  } catch (err) {
+    error(`Failed to edit: ${err.message}`);
+    res.status(500).redirect(`/profile?errmsg=${err.message}`);
+  }
+};
+
+export { addPhoto, editCaption };

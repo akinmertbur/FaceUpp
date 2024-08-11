@@ -132,11 +132,11 @@
               <% } %>
             </div>
             <div class="comment-form">
-              <form action="/api/comments/add" method="POST">
+              <form action="/api/comments/add" method="POST" onsubmit="return validateAddCommentForm('<%= i %>')">
                 <div class="form-group">
                   <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
                   <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
-                  <input type="text" name="comment" placeholder="Type comment..." required>
+                  <input id="comment-text<%= i %>" type="text" name="comment" placeholder="Type comment..." required>
                   <button type="submit" class="add-comment-button">Add Comment</button>
                 </div>      
               </form>
@@ -190,6 +190,15 @@
       commentsPanel.classList.add('hide');
       commentButton.innerHTML = "Show All Comments";
     }
+  }
+
+  function validateAddCommentForm(i) {
+    const comment = document.getElementById(`comment-text${i}`).value;
+    if (comment.trim() === '') {
+      alert('Comment cannot be empty');
+      return false;
+    }
+    return true;
   }
 </script>
 

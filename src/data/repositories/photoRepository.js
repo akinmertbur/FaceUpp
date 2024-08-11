@@ -6,6 +6,17 @@ const addPhoto = async (photoData) => {
 };
 
 const getPhotos = async (userId) => {
-  return await Photo.findAll({ where: { userId: userId } });
+  return await Photo.findAll({
+    where: { userId: userId },
+    order: [["id", "ASC"]],
+  });
 };
-export { addPhoto, getPhotos };
+
+const editCaption = async (photoId, newCaption) => {
+  return await Photo.update(
+    { caption: newCaption },
+    { where: { id: photoId } }
+  );
+};
+
+export { addPhoto, getPhotos, editCaption };

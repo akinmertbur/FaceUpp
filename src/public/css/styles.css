@@ -483,3 +483,25 @@ input[type="file"] {
 .follow-unfollow-button button:hover {
   background-color: #909090;
 }
+
+.photo-bio {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.edit-caption-button {
+  align-items: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 15px;
+  padding: 0;
+  width: 1px;
+  height: 2px;
+}
+
+.save-caption-button {
+  padding: 5px 10px 5px 10px;
+  margin-left: 10px;
+}

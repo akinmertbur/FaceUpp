@@ -4,6 +4,7 @@ import AWS from "aws-sdk";
 import {
   addPhoto,
   getPhotos,
+  editCaption,
 } from "../../data/repositories/photoRepository.js";
 import dotenv from "dotenv";
 import { log, error } from "../../utils/logger.js";
@@ -173,6 +174,18 @@ const cleanUpLocalFiles = () => {
   }, 5000); // Adjust the delay as needed
 };
 
+const updateCaption = async (photoId, newCaption) => {
+  try {
+    if (!photoId || !newCaption) {
+      throw new Error("Photo ID and Caption text is required!");
+    }
+
+    return await editCaption(photoId, newCaption);
+  } catch (err) {
+    throw new Error(`Failed to edit the caption of photo: ${err.message}`);
+  }
+};
+
 export {
   insertPhoto,
   uploadPhotoToS3,
@@ -181,4 +194,5 @@ export {
   downloadPhotos,
   downloadProfilePicture,
   cleanUpLocalFiles,
+  updateCaption,
 };

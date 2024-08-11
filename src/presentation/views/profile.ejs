@@ -101,7 +101,19 @@
               <img src="<%= photos[i].localUrl %>" alt="Photo">
             </div>
             <div class="photo-bio">
-              <p><%= photos_info[i].caption  %></p>
+              <p id="photo-bio<%= i %>"><%= photos_info[i].caption  %></p>
+              <button id="photo-bio-button<%= i %>" class="edit-caption-button" onclick="editPhotoCaption('<%= i %>')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                  <path d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2L2 11.207V13h1.793L14 3.793 11.207 2zM1 13.5V16h2.5l.5-.5H1.5a.5.5 0 0 1-.5-.5v-2.5l-.5.5z"/>
+                </svg>
+              </button>
+              <div>
+                <form action="/api/photos/editCaption" method="POST" onsubmit="return validateEditCaptionForm('<%= i %>')">
+                  <input type="hidden" class="hide" name="photoId" value="<%= photos_info[i].id %>">
+                  <input id="photo-bio-caption<%= i %>" type="text" class="hide" name="newCaption" required>
+                  <button id="saveCaptionButton<%= i %>" type="submit" class="edit-buttons hide save-caption-button">Save</button>
+                </form>
+              </div>
             </div>
             <div class="likes">
               <div id="likes-panel<%= i %>" class="likes-panel hide">
@@ -154,11 +166,11 @@
                 <% } %>
               </div>
               <div class="comment-form">
-                <form action="/api/comments/add" method="POST">
+                <form action="/api/comments/add" method="POST" onsubmit="return validateAddCommentForm('<%= i %>')">
                   <div class="form-group">
                     <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
                     <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
-                    <input type="text" name="comment" placeholder="Type comment..." required>
+                    <input id="comment-text<%= i %>" type="text" name="comment" placeholder="Type comment..." required>
                     <button type="submit" class="add-comment-button">Add Comment</button>
                   </div>      
                 </form>
@@ -341,6 +353,20 @@
     }
   }
 
+  function editPhotoCaption(i) {
+    const photoCaptionButton = document.getElementById(`photo-bio-button${i}`);
+    const photoCaption = document.getElementById(`photo-bio${i}`);
+    const photoBioCaption = document.getElementById(`photo-bio-caption${i}`);
+    const saveCaptionButton = document.getElementById(`saveCaptionButton${i}`);
+
+    photoCaption.classList.add('hide');
+    photoCaptionButton.classList.add('hide');
+    photoBioCaption.classList.remove('hide');
+    saveCaptionButton.classList.remove('hide');
+
+    photoBioCaption.value = photoCaption.innerHTML;
+  }
+
   function validateBioForm() {
     const bioText = document.getElementById('editBioInputField').value;
     if (bioText.trim() === '') {
@@ -405,6 +431,24 @@
       document.getElementById('photo').classList.remove('is-invalid');
     }
     return isValid;
+  }
+
+  function validateEditCaptionForm(i) {
+    const newCaption = document.getElementById(`photo-bio-caption${i}`).value;
+    if (newCaption.trim() === '') {
+      alert('Caption cannot be empty');
+      return false;
+    }
+    return true;
+  }
+
+  function validateAddCommentForm(i) {
+    const comment = document.getElementById(`comment-text${i}`).value;
+    if (comment.trim() === '') {
+      alert('Comment cannot be empty');
+      return false;
+    }
+    return true;
   }
 </script>
 <%- include('partials/footer') %>
