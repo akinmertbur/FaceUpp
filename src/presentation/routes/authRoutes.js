@@ -16,6 +16,6 @@ const router = express.Router();
 router.post("/login", loginUserController);
 router.post("/register", validateCreateUser, registerUserController);
 router.get("/logout", logoutUserController);
-router.post("/editPassword", validateEditPassword, editPasswordController);
+router.patch("/editPassword", validateEditPassword, editPasswordController);
 
 export default router;

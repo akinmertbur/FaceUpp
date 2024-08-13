@@ -24,7 +24,7 @@ const findUserById = async (id) => {
 };
 
 const updateUserPassword = async (userId, hash) => {
-  await updatePassword(userId, hash);
+  return await updatePassword(userId, hash);
 };
 
 export { registerUser, findUserByEmail, findUserById, updateUserPassword };

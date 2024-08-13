@@ -23,10 +23,10 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 router.post("/", validateCreateUser, createUser);
-router.post("/editBio", validateEditBio, editBio);
-router.post("/editUsername", validateEditUsername, editUsername);
-router.post("/editEmail", validateEditEmail, editEmail);
-router.post(
+router.patch("/editBio", validateEditBio, editBio);
+router.patch("/editUsername", validateEditUsername, editUsername);
+router.patch("/editEmail", validateEditEmail, editEmail);
+router.patch(
   "/editProfilePicture",
   upload.single("photo"),
   validateProfilePicture,

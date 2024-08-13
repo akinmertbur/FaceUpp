@@ -286,7 +286,7 @@ function validateEditCaptionForm(i) {
   return true;
 }
 
-const handleEditCaptionFormSubmit = async (i) => {
+const handleEditCaptionFormSubmit = async (event, i) => {
   event.preventDefault(); // Prevent the default form submission
 
   // Perform validation
@@ -317,6 +317,181 @@ const handleEditCaptionFormSubmit = async (i) => {
   } catch (err) {
     console.log(`Error: ${err}`);
     alert("Error updating caption");
+  }
+
+  return false; // Ensure the form doesn't trigger a page reload
+};
+
+const handleEditBioFormSubmit = async (event) => {
+  event.preventDefault(); // Prevent the default form submission
+
+  // Perform validation
+  if (!validateBioForm()) {
+    return false;
+  }
+
+  const form = document.getElementById("editBioForm");
+  const userId = form.userId.value;
+  const bioText = form.bioText.value;
+
+  try {
+    const response = await fetch("/api/users/editBio", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, bioText }),
+    });
+
+    if (response.ok) {
+      const updatedBio = await response.json();
+
+      // Update the bio display area with the new bio
+      document.getElementById("user-bio").innerText = updatedBio.bio;
+    } else {
+      alert("Error updating user bio");
+    }
+  } catch (err) {
+    console.log(`Error: ${err}`);
+    alert("Error updating user bio");
+  }
+
+  return false; // Ensure the form doesn't trigger a page reload
+};
+
+const handleEditUsernameFormSubmit = async (event) => {
+  event.preventDefault();
+
+  if (!validateUsernameForm()) {
+    return false;
+  }
+
+  const form = document.getElementById("editUsernameForm");
+  const userId = form.userId.value;
+  const username = form.username.value;
+
+  try {
+    const response = await fetch("/api/users/editUsername", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, username }),
+    });
+
+    if (response.ok) {
+      const updatedUsername = await response.json();
+
+      document.getElementById("username").innerText = updatedUsername.username;
+    } else {
+      alert("Error updating username");
+    }
+  } catch (err) {
+    console.log(`Error: ${err}`);
+    alert("Error updating username");
+  }
+
+  return false; // Ensure the form doesn't trigger a page reload
+};
+
+const handleEditEmailFormSubmit = async (event) => {
+  event.preventDefault();
+
+  if (!validateEmailForm()) {
+    return false;
+  }
+
+  const form = document.getElementById("editEmailForm");
+  const userId = form.userId.value;
+  const email = form.email.value;
+
+  try {
+    const response = await fetch("/api/users/editEmail", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, email }),
+    });
+
+    const updatedEmail = await response.json();
+    if (response.ok) {
+      alert(updatedEmail.message);
+    } else {
+      alert(`Error updating email: ${updatedEmail.message}`);
+    }
+  } catch (err) {
+    console.log(`Error: ${err}`);
+    alert("Error updating email");
+  }
+
+  return false; // Ensure the form doesn't trigger a page reload
+};
+
+const handleEditProfilePictureFormSubmit = async (event) => {
+  event.preventDefault();
+
+  if (!validateAddProfilePictureForm()) {
+    return false;
+  }
+
+  const form = document.getElementById("editProfilePictureForm");
+  const formData = new FormData(form); // Automatically includes the file input and other form data
+
+  try {
+    const response = await fetch("/api/users/editProfilePicture", {
+      method: "PATCH",
+      body: formData, // Send the FormData, including the file
+    });
+
+    const updatedProfilePicture = await response.json();
+    if (response.ok) {
+      alert(updatedProfilePicture.message);
+    } else {
+      alert(`Error updating profile picture: ${updatedProfilePicture.message}`);
+    }
+  } catch (err) {
+    console.log(`Error: ${err}`);
+    alert("Error updating profile picture");
+  }
+
+  return false; // Ensure the form doesn't trigger a page reload
+};
+
+// Function to preview the profile picture before uploading
+const previewProfilePicture = () => {
+  const fileInput = document.getElementById("photo");
+  const file = fileInput.files[0];
+
+  if (file) {
+    const previewUrl = URL.createObjectURL(file);
+    const profilePictureElement = document.getElementById("profile-picture");
+    profilePictureElement.src = previewUrl; // Update the image source to the preview URL
+  }
+};
+
+const handleEditPasswordFormSubmit = async (event) => {
+  event.preventDefault();
+
+  if (!validatePasswordForm()) {
+    return false;
+  }
+
+  const form = document.getElementById("editPasswordForm");
+  //const formData = new FormData(form);
+  const userId = form.userId.value;
+  const password = form.password.value;
+
+  try {
+    const response = await fetch("/api/auth/editPassword", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, password }),
+    });
+
+    const updatedPassword = await response.json();
+    if (response.ok) {
+      alert(updatedPassword.message);
+    } else {
+      alert(`Error updating password: ${updatedPassword.message}`);
+    }
+  } catch (err) {
+    console.log(`Error: ${err}`);
+    alert("Error updating password");
   }
 
   return false; // Ensure the form doesn't trigger a page reload

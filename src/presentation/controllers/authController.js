@@ -61,16 +61,20 @@ const logoutUserController = (req, res) => {
 };
 
 const editPasswordController = async (req, res) => {
-  const { password } = req.body;
-  const userId = req.user.id;
+  const { userId, password } = req.body;
 
   try {
     const hash = await bcrypt.hash(password, saltRounds);
-    await updateUserPassword(userId, hash);
-    res.redirect("/profile");
+    const result = await updateUserPassword(userId, hash);
+
+    if (result[0] === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    log(`Password changed for the user ID: ${userId}`);
+    res.status(200).json({ message: "Password changed successfully" });
   } catch (err) {
-    error(`Error changing password: ${err.message}`);
-    res.status(500).redirect(`/profile?errmsg=${err.message}`);
+    error(`Failed to change password: ${err.message}`);
+    res.status(500).json({ message: err.message });
   }
 };
 

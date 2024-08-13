@@ -14,9 +14,9 @@
       </div>
 
       <div class="username-bio">
-        <h1><%= user.username %></h1>
+        <h1 id="username"><%= user.username %></h1>
         <div class="bio">
-          <p><%= user.bio %></p>
+          <p id="user-bio"><%= user.bio %></p>
         </div>
       </div>
       <div class="followings-followers">
@@ -62,34 +62,35 @@
     <% } %>
     
     <div class="edit-forms">
-      <form action="/api/users/editBio" method="POST" onsubmit="return validateBioForm()">
+      <form id="editBioForm" onsubmit="return handleEditBioFormSubmit(event)">
         <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
         <input id="editBioInputField" type="text" class="form-control hide" name="bioText" placeholder="Enter the Bio.." required>
-        <button id="saveBioButton" type="submit" class="edit-buttons hide">Save</button>
+        <button id="saveBioButton" type="submit" class="edit-buttons hide" onclick="toggleHideBio()">Save</button>
       </form>
       
-      <form action="/api/users/editUsername" method="POST" onsubmit="return validateUsernameForm()">
+      <form id="editUsernameForm" onsubmit="return handleEditUsernameFormSubmit(event)">
         <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
         <input id="editUsernameInputField" type="text" class="form-control hide" name="username" placeholder="Enter the Username.." required>
-        <button id="saveUsernameButton" type="submit" class="edit-buttons hide">Save</button>
+        <button id="saveUsernameButton" type="submit" class="edit-buttons hide" onclick="toggleHideUsername()">Save</button>
       </form>
       
-      <form action="/api/users/editEmail" method="POST" onsubmit="return validateEmailForm()">
+      <form id="editEmailForm" onsubmit="return handleEditEmailFormSubmit(event)">
         <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
         <input id="editEmailInputField" type="email" class="form-control hide" name="email" placeholder="Enter the Email.." required>
-        <button id="saveEmailButton" type="submit" class="edit-buttons hide">Save</button>
+        <button id="saveEmailButton" type="submit" class="edit-buttons hide" onclick="toggleHideEmail()">Save</button>
       </form>
       
-      <form action="/api/auth/editPassword" method="POST" onsubmit="return validatePasswordForm()">
-        <input id="editPasswordInputField" type="password" class="form-control hide" name="password" placeholder="Enter the Password.." required>
-        <button id="savePasswordButton" type="submit" class="edit-buttons hide">Save</button>
-      </form>
-      
-      <form action="/api/users/editProfilePicture" method="POST" enctype="multipart/form-data" onsubmit="return validateAddProfilePictureForm()">
+      <form id="editPasswordForm" onsubmit="return handleEditPasswordFormSubmit(event)">
         <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
-        <input type="file" class="form-control hide" id="photo" name="photo" accept="image/*">
+        <input id="editPasswordInputField" type="password" class="form-control hide" name="password" placeholder="Enter the Password.." required>
+        <button id="savePasswordButton" type="submit" class="edit-buttons hide" onclick="toggleHidePassword()">Save</button>
+      </form>
+      
+      <form id="editProfilePictureForm" enctype="multipart/form-data" onsubmit="return handleEditProfilePictureFormSubmit(event)">
+        <input type="hidden" class="form-control hide" name="userId" value="<%= user.id %>">
+        <input type="file" class="form-control hide" id="photo" name="photo" accept="image/*" onchange="previewProfilePicture()">
         <div class="invalid-feedback" id="photoError"></div>
-        <button id="saveProfilePictureButton" type="submit" class="edit-buttons hide">Save</button>
+        <button id="saveProfilePictureButton" type="submit" class="edit-buttons hide" onclick="toggleHideProfilePicture()">Save</button>
       </form>
     </div>
     
@@ -108,7 +109,7 @@
                 </svg>
               </button>
               <div>
-                <form id="editCaptionForm<%= i %>" onsubmit="return handleEditCaptionFormSubmit('<%= i %>')">
+                <form id="editCaptionForm<%= i %>" onsubmit="return handleEditCaptionFormSubmit(event, '<%= i %>')">
                   <input type="hidden" class="hide" name="photoId" value="<%= photos_info[i].id %>">
                   <input id="photo-bio-caption<%= i %>" type="text" class="hide" name="newCaption" required>
                   <button id="saveCaptionButton<%= i %>" type="submit" class="edit-buttons hide save-caption-button" onclick="editPhotoCaption('<%= i %>')">Save</button>
