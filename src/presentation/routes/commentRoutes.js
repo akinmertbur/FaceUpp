@@ -5,6 +5,6 @@ import { validateAddRemoveComment } from "../../middleware/validationMiddleware.
 const router = express.Router();
 
 router.post("/add", validateAddRemoveComment, addComment);
-router.post("/remove", validateAddRemoveComment, removeComment);
+router.delete("/remove", validateAddRemoveComment, removeComment);
 
 export default router;
