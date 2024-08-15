@@ -754,3 +754,130 @@ function generateUniqueId(length) {
   }
   return result;
 }
+
+const handleFollowFormSubmit = async (event) => {
+  event.preventDefault();
+
+  const form = document.getElementById(`followForm`);
+  const userId = form.userId.value;
+
+  const followButton = document.getElementById("followButton");
+
+  if (followButton.textContent === "Unfollow") {
+    form.id = `unfollowForm`;
+    followButton.id = `unfollowButton`;
+    await handleUnfollowFormSubmit(event);
+    form.id = `followForm`;
+    followButton.id = `followButton`;
+  } else {
+    try {
+      const response = await fetch("/api/following/follow", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+
+      if (response.ok) {
+        const followResponse = await response.json();
+        const user = followResponse.user;
+        const followersContainer = document.getElementById(
+          "followers-container"
+        );
+        const followersDetail = document.getElementById("followers-detail");
+
+        if (followersDetail) {
+          const newParagraph = document.createElement("li");
+          newParagraph.innerHTML = `<a href="/userProfile/${user.id}">${user.username}</a>`;
+
+          followersDetail.appendChild(newParagraph);
+        } else {
+          const newParagraph = document.createElement("ul");
+          newParagraph.innerHTML = `<li><a href="/userProfile/${user.id}">${user.username}</a></li>`;
+          followersContainer.appendChild(newParagraph);
+        }
+
+        followButton.textContent = "Unfollow";
+
+        const followersButton = document.getElementById(`followers-button`);
+        const num = Number(followersButton.textContent.split(" ")[1]);
+        followersButton.textContent = `Followers ${num + 1}`;
+      } else {
+        alert("Error following the user");
+      }
+    } catch (err) {
+      console.log(`Error: ${err}`);
+      alert("Error following the user");
+    }
+  }
+
+  return false;
+};
+
+const handleUnfollowFormSubmit = async (event) => {
+  event.preventDefault();
+
+  const form = document.getElementById(`unfollowForm`);
+  const userId = form.userId.value;
+
+  const unfollowButton = document.getElementById("unfollowButton");
+
+  if (unfollowButton.textContent === "Follow") {
+    form.id = `followForm`;
+    unfollowButton.id = `followButton`;
+    await handleFollowFormSubmit(event);
+    form.id = `unfollowForm`;
+    unfollowButton.id = `unfollowButton`;
+  } else {
+    try {
+      const response = await fetch("/api/following/unfollow", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+
+      if (response.ok) {
+        const unfollowResponse = await response.json();
+        const user = unfollowResponse.user;
+
+        const followersDetail = document.getElementById("followers-detail");
+
+        if (followersDetail) {
+          const elements = document.querySelectorAll(`#followers-detail li`);
+          elements.forEach((element) => {
+            if (
+              element.innerHTML.includes(
+                `<a href="/userProfile/${user.id}">${user.username}</a>`
+              )
+            ) {
+              element.remove();
+            }
+          });
+        } else {
+          const elements = document.querySelectorAll(`#followers-container ul`);
+          elements.forEach((element) => {
+            if (
+              element.innerHTML.includes(
+                `<li><a href="/userProfile/${user.id}">${user.username}</a></li>`
+              )
+            ) {
+              element.remove();
+            }
+          });
+        }
+
+        unfollowButton.textContent = "Follow";
+
+        const followersButton = document.getElementById(`followers-button`);
+        const num = Number(followersButton.textContent.split(" ")[1]);
+        followersButton.textContent = `Followers ${num - 1}`;
+      } else {
+        alert("Error unfollowing the user");
+      }
+    } catch (err) {
+      console.log(`Error: ${err}`);
+      alert("Error unfollowing the user");
+    }
+  }
+
+  return false;
+};

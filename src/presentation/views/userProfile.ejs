@@ -22,27 +22,27 @@
     <div class="follow-unfollow-button">
       <% if(locals.following) { %>
         <div>
-          <form action="/api/following/unfollow" method="POST">
+          <form id="unfollowForm" onsubmit="return handleUnfollowFormSubmit(event)">
             <div class="form-group">
               <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
             </div>
-            <button type="submit">Unfollow</button>
+            <button id="unfollowButton" type="submit">Unfollow</button>
           </form>
         </div>
       <% } else { %>
         <div>
-          <form action="/api/following/follow" method="POST">
+          <form id="followForm" onsubmit="return handleFollowFormSubmit(event)">
             <div class="form-group">
               <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
             </div>
-            <button type="submit">Follow</button>
+            <button id="followButton" type="submit">Follow</button>
           </form>
         </div>
       <% } %>
     </div>
     <div class="followings-followers">
-      <button id="followings-button" class="followers-followings-button">Followings<span class="followers-followings">&nbsp; <%= followings.length %> </span></button>
-      <button id="followers-button" class="followers-followings-button">Followers<span class="followers-followings">&nbsp; <%= followers.length %> </span></button>
+      <button id="followings-button" class="followers-followings-button">Followings <%= followings.length %></button>
+      <button id="followers-button" class="followers-followings-button">Followers <%= followers.length %></button>
     </div>
     <div class="followings-followers-container">
       <div id="followings-container" class="followings-list hide">
@@ -60,7 +60,9 @@
         <% if (followers.length > 0) { %>
           <ul>
             <% followers.forEach(user => { %>
-              <li><a href="/userProfile/<%= user.id %>"><%= user.username %></a></li>
+              <div id="followers-detail">
+                <li><a href="/userProfile/<%= user.id %>"><%= user.username %></a></li>
+              </div>
             <% }) %>
           </ul>
         <% } %>
@@ -91,7 +93,7 @@
           <div class="photo-buttons">
             <div class="buttons-container">
               <% if(locals.likeDetails[i]) { %>
-                <form action="/api/likes/unlike" method="POST">
+                <form id="unlikeForm<%= i %>" onsubmit="return handleUnlikeFormSubmit(event, '<%= i %>')">
                   <div>
                     <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
                     <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
@@ -99,7 +101,7 @@
                   <button type="submit" id="disLikeButton<%= i %>" class="like-button liked">Liked</button>
                 </form>
               <% } else { %>
-                <form action="/api/likes/like" method="POST">
+                <form id="likeForm<%= i %>" onsubmit="return handleLikeFormSubmit(event, '<%= i %>')">
                   <div>
                     <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
                     <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
@@ -111,18 +113,18 @@
             </div>
             <div id="comments-panel<%= i %>" class="hide comments-panel">
               <% for (let j = 0; j < commentsByPhoto[i].length; j++) { %>
-                <div class="comment-detail">
+                <div id="comment-detail<%= i %><%= j %>" class="comment-detail">
                   <p>💬 <a href="/userProfile/<%= commentsByPhotoUserDetails[i][j].id %>"><%= commentsByPhotoUserDetails[i][j].username %></a>:</p>
                   <p> <%= commentsByPhoto[i][j].comment %> </p>
                   <% if(locals.reqUserId) { %>
                     <% if(commentsByPhotoUserDetails[i][j].id == reqUserId) { %>
-                      <form action="/api/comments/remove" method="POST">
+                      <form id="removeCommentForm<%= i %><%= j %>" onsubmit="return handleRemoveCommentFormSubmit(event, '<%= i %>', '<%= j %>')">
                         <div class="form-group">
-                          <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                          <input hidden type="text" class="form-control" name="userId" value="<%= commentsByPhotoUserDetails[i][j].id %>">
                           <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
                           <input hidden type="text" class="form-control" name="comment" value="<%= commentsByPhoto[i][j].comment %>">
                         </div>
-                        <button type="submit" class="comment-delete-button">
+                        <button type="submit" id="comment-delete-button<%= i %><%= j %>" class="comment-delete-button">
                           <svg viewBox="0 0 448 512" class="deleteCommentSvgIcon"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path></svg>
                         </button>
                       </form>
@@ -132,7 +134,7 @@
               <% } %>
             </div>
             <div class="comment-form">
-              <form action="/api/comments/add" method="POST" onsubmit="return validateAddCommentForm('<%= i %>')">
+              <form id="addCommentForm<%= i %>" onsubmit="return handleAddCommentFormSubmit(event, '<%= i %>')">
                 <div class="form-group">
                   <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
                   <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
@@ -152,54 +154,6 @@
   <% } %>
 <% } %>
 
-<script>
-  document.getElementById('followings-button').addEventListener('mouseover', function() {
-    document.getElementById('followings-container').classList.remove('hide');
-  });
-
-  document.getElementById('followings-button').addEventListener('mouseout', function() {
-    document.getElementById('followings-container').classList.add('hide');
-  });
-
-  document.getElementById('followers-button').addEventListener('mouseover', function() {
-    document.getElementById('followers-container').classList.remove('hide');
-  });
-
-  document.getElementById('followers-button').addEventListener('mouseout', function() {
-    document.getElementById('followers-container').classList.add('hide');
-  });
-
-  function toggleLikesPanel(i) {
-    const likesPanel = document.getElementById(`likes-panel${i}`);
-
-    if(likesPanel.classList.contains('hide')) {
-      likesPanel.classList.remove('hide');
-    } else {
-      likesPanel.classList.add('hide');
-    }
-  }
-
-  function toggleCommentsPanel(i) {
-    const commentsPanel = document.getElementById(`comments-panel${i}`);
-    const commentButton = document.getElementById(`showCommentButton${i}`);
-
-    if(commentsPanel.classList.contains('hide')) {
-      commentsPanel.classList.remove('hide');
-      commentButton.innerHTML = "Hide All Comments";
-    } else {
-      commentsPanel.classList.add('hide');
-      commentButton.innerHTML = "Show All Comments";
-    }
-  }
-
-  function validateAddCommentForm(i) {
-    const comment = document.getElementById(`comment-text${i}`).value;
-    if (comment.trim() === '') {
-      alert('Comment cannot be empty');
-      return false;
-    }
-    return true;
-  }
-</script>
+<script src="/js/profile.js"></script>
 
 <%- include('partials/footer') %>
