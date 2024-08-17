@@ -18,6 +18,7 @@ import {
   toggleLikesPanel,
   toggleCommentsPanel,
   editPhotoCaption,
+  previewProfilePicture,
 } from "./helpers/uiHelpers.js";
 import {
   handleEditCaptionFormSubmit,
@@ -25,7 +26,6 @@ import {
   handleEditUsernameFormSubmit,
   handleEditEmailFormSubmit,
   handleEditProfilePictureFormSubmit,
-  previewProfilePicture,
   handleEditPasswordFormSubmit,
   handleLikeFormSubmit,
   handleUnlikeFormSubmit,
@@ -53,13 +53,13 @@ window.toggleHideProfilePicture = toggleHideProfilePicture;
 window.toggleLikesPanel = toggleLikesPanel;
 window.toggleCommentsPanel = toggleCommentsPanel;
 window.editPhotoCaption = editPhotoCaption;
+window.previewProfilePicture = previewProfilePicture;
 
 window.handleEditCaptionFormSubmit = handleEditCaptionFormSubmit;
 window.handleEditBioFormSubmit = handleEditBioFormSubmit;
 window.handleEditUsernameFormSubmit = handleEditUsernameFormSubmit;
 window.handleEditEmailFormSubmit = handleEditEmailFormSubmit;
 window.handleEditProfilePictureFormSubmit = handleEditProfilePictureFormSubmit;
-window.previewProfilePicture = previewProfilePicture;
 window.handleEditPasswordFormSubmit = handleEditPasswordFormSubmit;
 window.handleLikeFormSubmit = handleLikeFormSubmit;
 window.handleUnlikeFormSubmit = handleUnlikeFormSubmit;

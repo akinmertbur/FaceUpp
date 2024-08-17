@@ -19,14 +19,17 @@ export const handleEditCaptionFormSubmit = async (event, i) => {
       body: JSON.stringify({ photoId, newCaption }),
     });
 
+    const updatedCaption = await response.json();
     if (response.ok) {
-      const updatedCaption = await response.json();
-
       // Update the caption display area with the new caption
       document.getElementById(`photo-bio${i}`).innerText =
         updatedCaption.caption;
     } else {
-      alert("Error updating caption");
+      if (response.status === 500) {
+        alert(`Server Error: ${updatedCaption.message}`);
+      } else {
+        alert(`Error updating caption: ${updatedCaption.message}`);
+      }
     }
   } catch (err) {
     console.log(`Error: ${err}`);
@@ -55,13 +58,16 @@ export const handleEditBioFormSubmit = async (event) => {
       body: JSON.stringify({ userId, bioText }),
     });
 
+    const updatedBio = await response.json();
     if (response.ok) {
-      const updatedBio = await response.json();
-
       // Update the bio display area with the new bio
       document.getElementById("user-bio").innerText = updatedBio.bio;
     } else {
-      alert("Error updating user bio");
+      if (response.status === 500) {
+        alert(`Server Error: ${updatedBio.message}`);
+      } else {
+        alert(`Error updating user bio: ${updatedBio.message}`);
+      }
     }
   } catch (err) {
     console.log(`Error: ${err}`);
@@ -89,12 +95,15 @@ export const handleEditUsernameFormSubmit = async (event) => {
       body: JSON.stringify({ userId, username }),
     });
 
+    const updatedUsername = await response.json();
     if (response.ok) {
-      const updatedUsername = await response.json();
-
       document.getElementById("username").innerText = updatedUsername.username;
     } else {
-      alert("Error updating username");
+      if (response.status === 500) {
+        alert(`Server Error: ${updatedUsername.message}`);
+      } else {
+        alert(`Error updating username: ${updatedUsername.message}`);
+      }
     }
   } catch (err) {
     console.log(`Error: ${err}`);
@@ -126,7 +135,11 @@ export const handleEditEmailFormSubmit = async (event) => {
     if (response.ok) {
       alert(updatedEmail.message);
     } else {
-      alert(`Error updating email: ${updatedEmail.message}`);
+      if (response.status === 500) {
+        alert(`Server Error: ${updatedEmail.message}`);
+      } else {
+        alert(`Error updating email: ${updatedEmail.message}`);
+      }
     }
   } catch (err) {
     console.log(`Error: ${err}`);
@@ -156,7 +169,13 @@ export const handleEditProfilePictureFormSubmit = async (event) => {
     if (response.ok) {
       alert(updatedProfilePicture.message);
     } else {
-      alert(`Error updating profile picture: ${updatedProfilePicture.message}`);
+      if (response.status === 500) {
+        alert(`Server Error: ${updatedProfilePicture.message}`);
+      } else {
+        alert(
+          `Error updating profile picture: ${updatedProfilePicture.message}`
+        );
+      }
     }
   } catch (err) {
     console.log(`Error: ${err}`);
@@ -164,18 +183,6 @@ export const handleEditProfilePictureFormSubmit = async (event) => {
   }
 
   return false; // Ensure the form doesn't trigger a page reload
-};
-
-// Function to preview the profile picture before uploading
-export const previewProfilePicture = () => {
-  const fileInput = document.getElementById("photo");
-  const file = fileInput.files[0];
-
-  if (file) {
-    const previewUrl = URL.createObjectURL(file);
-    const profilePictureElement = document.getElementById("profile-picture");
-    profilePictureElement.src = previewUrl; // Update the image source to the preview URL
-  }
 };
 
 export const handleEditPasswordFormSubmit = async (event) => {
@@ -200,7 +207,11 @@ export const handleEditPasswordFormSubmit = async (event) => {
     if (response.ok) {
       alert(updatedPassword.message);
     } else {
-      alert(`Error updating password: ${updatedPassword.message}`);
+      if (response.status === 500) {
+        alert(`Server Error: ${updatedPassword.message}`);
+      } else {
+        alert(`Error updating password: ${updatedPassword.message}`);
+      }
     }
   } catch (err) {
     console.log(`Error: ${err}`);
@@ -232,8 +243,8 @@ export const handleLikeFormSubmit = async (event, i) => {
         body: JSON.stringify({ userId, photoId }),
       });
 
+      const likeResponse = await response.json();
       if (response.ok) {
-        const likeResponse = await response.json();
         const user = likeResponse.user;
 
         const likesPanel = document.getElementById(`likes-panel${i}`);
@@ -248,7 +259,11 @@ export const handleLikeFormSubmit = async (event, i) => {
         const num = Number(likesCount.textContent.split(" ")[0]);
         likesCount.textContent = `${num + 1} Likes`;
       } else {
-        alert(`Error like the photo`);
+        if (response.status === 500) {
+          alert(`Server Error: ${likeResponse.message}`);
+        } else {
+          alert(`Error like the photo: ${likeResponse.message}`);
+        }
       }
     } catch (err) {
       console.log(`Error: ${err}`);
@@ -282,8 +297,8 @@ export const handleUnlikeFormSubmit = async (event, i) => {
         body: JSON.stringify({ userId, photoId }),
       });
 
+      const unlikeResponse = await response.json();
       if (response.ok) {
-        const unlikeResponse = await response.json();
         const user = unlikeResponse.user;
 
         const elements = document.querySelectorAll(`#likes-panel${i} p`);
@@ -305,7 +320,11 @@ export const handleUnlikeFormSubmit = async (event, i) => {
         const num = Number(likesCount.textContent.split(" ")[0]);
         likesCount.textContent = `${num - 1} Likes`;
       } else {
-        alert(`Error unlike the photo`);
+        if (response.status === 500) {
+          alert(`Server Error: ${unlikeResponse.message}`);
+        } else {
+          alert(`Error unlike the photo: ${unlikeResponse.message}`);
+        }
       }
     } catch (err) {
       console.log(`Error: ${err}`);
@@ -335,8 +354,8 @@ export const handleAddCommentFormSubmit = async (event, i) => {
       body: JSON.stringify({ userId, photoId, comment }),
     });
 
+    const commentResponse = await response.json();
     if (response.ok) {
-      const commentResponse = await response.json();
       const user = commentResponse.user;
       const comment = commentResponse.comment;
       const commentsPanel = document.getElementById(`comments-panel${i}`);
@@ -347,7 +366,11 @@ export const handleAddCommentFormSubmit = async (event, i) => {
       commentsPanel.appendChild(newParagraph);
       addRemoveCommentForm(i, uniqueId, user, photoId, comment);
     } else {
-      alert(`Error adding comment to the photo`);
+      if (response.status === 500) {
+        alert(`Server Error: ${commentResponse.message}`);
+      } else {
+        alert(`Error adding comment to the photo: ${commentResponse.message}`);
+      }
     }
   } catch (err) {
     console.log(`Error: ${err}`);
@@ -372,8 +395,8 @@ export const handleRemoveCommentFormSubmit = async (event, i, j) => {
       body: JSON.stringify({ userId, photoId, comment }),
     });
 
+    const commentResponse = await response.json();
     if (response.ok) {
-      const commentResponse = await response.json();
       const user = commentResponse.user;
       const comment = commentResponse.comment;
 
@@ -401,7 +424,13 @@ export const handleRemoveCommentFormSubmit = async (event, i, j) => {
       );
       commentDeleteButton.remove();
     } else {
-      alert(`Error removing comment from the photo`);
+      if (response.status === 500) {
+        alert(`Server Error: ${commentResponse.message}`);
+      } else {
+        alert(
+          `Error removing comment from the photo: ${commentResponse.message}`
+        );
+      }
     }
   } catch (err) {
     console.log(`Error: ${err}`);
@@ -491,8 +520,8 @@ export const handleFollowFormSubmit = async (event) => {
         body: JSON.stringify({ userId }),
       });
 
+      const followResponse = await response.json();
       if (response.ok) {
-        const followResponse = await response.json();
         const user = followResponse.user;
         const followersContainer = document.getElementById(
           "followers-container"
@@ -516,7 +545,11 @@ export const handleFollowFormSubmit = async (event) => {
         const num = Number(followersButton.textContent.split(" ")[1]);
         followersButton.textContent = `Followers ${num + 1}`;
       } else {
-        alert("Error following the user");
+        if (response.status === 500) {
+          alert(`Server Error: ${followResponse.message}`);
+        } else {
+          alert(`Error following the user: ${followResponse.message}`);
+        }
       }
     } catch (err) {
       console.log(`Error: ${err}`);
@@ -549,8 +582,8 @@ export const handleUnfollowFormSubmit = async (event) => {
         body: JSON.stringify({ userId }),
       });
 
+      const unfollowResponse = await response.json();
       if (response.ok) {
-        const unfollowResponse = await response.json();
         const user = unfollowResponse.user;
 
         const followersDetail = document.getElementById("followers-detail");
@@ -585,7 +618,11 @@ export const handleUnfollowFormSubmit = async (event) => {
         const num = Number(followersButton.textContent.split(" ")[1]);
         followersButton.textContent = `Followers ${num - 1}`;
       } else {
-        alert("Error unfollowing the user");
+        if (response.status === 500) {
+          alert(`Server Error: ${unfollowResponse.message}`);
+        } else {
+          alert(`Error unfollowing the user: ${unfollowResponse.message}`);
+        }
       }
     } catch (err) {
       console.log(`Error: ${err}`);

@@ -201,3 +201,15 @@ export function editPhotoCaption(i) {
     photoBioCaption.value = photoCaption.innerHTML;
   }
 }
+
+// Function to preview the profile picture before uploading
+export const previewProfilePicture = () => {
+  const fileInput = document.getElementById("photo");
+  const file = fileInput.files[0];
+
+  if (file) {
+    const previewUrl = URL.createObjectURL(file);
+    const profilePictureElement = document.getElementById("profile-picture");
+    profilePictureElement.src = previewUrl; // Update the image source to the preview URL
+  }
+};
