@@ -12,7 +12,7 @@
                 <%= success %>
             </div>
         <% } %>
-        <form id="searchForm" action="/api/users/getUsers" method="post">
+        <form id="searchForm" action="/api/users/getUsers" method="POST" onsubmit="return validateSearchForm()">
             <div class="form-group">
                 <label style="font-weight: bolder;" for="username">Username</label>
                 <input type="text" class="form-control" id="username" name="username" placeholder="Enter the Username..." required>
@@ -32,5 +32,7 @@
         <% } %>
     </div>
 </div>
+
+<script src="/js/search.js"></script>
 
 <%- include('partials/footer') %>
