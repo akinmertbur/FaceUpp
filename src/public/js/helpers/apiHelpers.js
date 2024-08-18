@@ -331,13 +331,15 @@ export const handleAddCommentFormSubmit = async (event, i) => {
     if (response.ok) {
       const user = commentResponse.user;
       const comment = commentResponse.comment;
-      const commentsPanel = document.getElementById(`comments-panel${i}`);
-      const newParagraph = document.createElement("p");
       const uniqueId = generateUniqueId(5);
-      newParagraph.id = `comment-paragraph${i}${uniqueId}`;
-      newParagraph.innerHTML = `💬 <a href="/userProfile/${user.id}"> ${user.username} </a>: ${comment}`;
-      commentsPanel.appendChild(newParagraph);
-      addRemoveCommentForm(i, uniqueId, user, photoId, comment);
+
+      addCommentParagraphAndRemoveCommentForm(
+        i,
+        uniqueId,
+        user,
+        photoId,
+        comment
+      );
     } else {
       if (response.status === 500) {
         alert(`Server Error: ${commentResponse.message}`);
@@ -370,32 +372,17 @@ export const handleRemoveCommentFormSubmit = async (event, i, j) => {
 
     const commentResponse = await response.json();
     if (response.ok) {
-      const user = commentResponse.user;
-      const comment = commentResponse.comment;
+      const commentDetail = document.getElementById(`commentDetail${i}${j}`);
 
-      const commentParagaraph = document.getElementById(
-        `comment-paragraph${i}${j}`
-      );
-      if (commentParagaraph) {
-        commentParagaraph.remove();
+      if (commentDetail) {
+        commentDetail.remove();
       } else {
-        const elements = document.querySelectorAll(`#comment-detail${i}${j} p`);
-        elements.forEach((element) => {
-          if (
-            element.innerHTML.includes(
-              `💬 <a href="/userProfile/${user.id}">${user.username}</a>:`
-            ) ||
-            element.innerHTML.includes(` ${comment} `)
-          ) {
-            element.remove();
-          }
-        });
-      }
+        const comment_detail = document.getElementById(
+          `comment-detail${i}${j}`
+        );
 
-      const commentDeleteButton = document.getElementById(
-        `comment-delete-button${i}${j}`
-      );
-      commentDeleteButton.remove();
+        comment_detail.remove();
+      }
     } else {
       if (response.status === 500) {
         alert(`Server Error: ${commentResponse.message}`);
@@ -548,7 +535,7 @@ export const handleUnfollowFormSubmit = async (event) => {
   return false;
 };
 
-function addRemoveCommentForm(i, j, user, photoId, comment) {
+function addCommentParagraphAndRemoveCommentForm(i, j, user, photoId, comment) {
   const form = document.createElement("form");
   form.id = `removeCommentForm${i}${j}`;
   form.onsubmit = function (event) {
@@ -593,7 +580,18 @@ function addRemoveCommentForm(i, j, user, photoId, comment) {
   form.appendChild(button);
 
   const commentsPanel = document.getElementById(`comments-panel${i}`);
-  commentsPanel.appendChild(form);
+
+  const newDiv = document.createElement("div");
+  newDiv.classList.add("comment-detail");
+  newDiv.id = `commentDetail${i}${j}`;
+
+  const newParagraph = document.createElement("p");
+  newParagraph.id = `comment-paragraph${i}${j}`;
+  newParagraph.innerHTML = `💬 <a href="/userProfile/${user.id}"> ${user.username} </a>: ${comment}`;
+
+  newDiv.appendChild(newParagraph);
+  newDiv.appendChild(form);
+  commentsPanel.appendChild(newDiv);
 }
 
 function generateUniqueId(length) {

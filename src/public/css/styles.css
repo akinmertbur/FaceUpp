@@ -146,6 +146,7 @@ td {
 
 .comments-panel {
   background-color: #fff;
+  height: fit-content;
 }
 
 .comments-panel button {
