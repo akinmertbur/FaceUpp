@@ -246,18 +246,8 @@ export const handleLikeFormSubmit = async (event, i) => {
       const likeResponse = await response.json();
       if (response.ok) {
         const user = likeResponse.user;
-
-        const likesPanel = document.getElementById(`likes-panel${i}`);
-        const newParagraph = document.createElement("p");
-        newParagraph.innerHTML = `🩷 <a href="/userProfile/${user.id}">${user.username}</a>`;
-        likesPanel.appendChild(newParagraph);
-
-        likeButton.textContent = "Liked";
-        likeButton.classList.add("liked");
-
-        const likesCount = document.getElementById(`likes-count${i}`);
-        const num = Number(likesCount.textContent.split(" ")[0]);
-        likesCount.textContent = `${num + 1} Likes`;
+        addRemoveUserToPanel(true, user, i);
+        likeUnlikeBtnChange(true, likeButton, i);
       } else {
         if (response.status === 500) {
           alert(`Server Error: ${likeResponse.message}`);
@@ -300,25 +290,8 @@ export const handleUnlikeFormSubmit = async (event, i) => {
       const unlikeResponse = await response.json();
       if (response.ok) {
         const user = unlikeResponse.user;
-
-        const elements = document.querySelectorAll(`#likes-panel${i} p`);
-
-        elements.forEach((element) => {
-          if (
-            element.innerHTML.includes(
-              `🩷 <a href="/userProfile/${user.id}">${user.username}</a>`
-            )
-          ) {
-            element.remove();
-          }
-        });
-
-        dislikeButton.textContent = "Like";
-        dislikeButton.classList.remove("liked");
-
-        const likesCount = document.getElementById(`likes-count${i}`);
-        const num = Number(likesCount.textContent.split(" ")[0]);
-        likesCount.textContent = `${num - 1} Likes`;
+        addRemoveUserToPanel(false, user, i);
+        likeUnlikeBtnChange(false, dislikeButton, i);
       } else {
         if (response.status === 500) {
           alert(`Server Error: ${unlikeResponse.message}`);
@@ -632,3 +605,40 @@ function generateUniqueId(length) {
   }
   return result;
 }
+
+const likeUnlikeBtnChange = (like, btn, i) => {
+  const likesCount = document.getElementById(`likes-count${i}`);
+  const num = Number(likesCount.textContent.split(" ")[0]);
+
+  if (!like) {
+    likesCount.textContent = `${num - 1} Likes`;
+    btn.textContent = "Like";
+    btn.classList.remove("liked");
+  } else {
+    likesCount.textContent = `${num + 1} Likes`;
+    btn.textContent = "Liked";
+    btn.classList.add("liked");
+  }
+};
+
+const addRemoveUserToPanel = (like, user, i) => {
+  const likesPanel = document.getElementById(`likes-panel${i}`);
+
+  if (!like) {
+    const elements = likesPanel.querySelectorAll("p");
+
+    elements.forEach((element) => {
+      if (
+        element.innerHTML.includes(
+          `🩷 <a href="/userProfile/${user.id}">${user.username}</a>`
+        )
+      ) {
+        element.remove();
+      }
+    });
+  } else {
+    const newParagraph = document.createElement("p");
+    newParagraph.innerHTML = `🩷 <a href="/userProfile/${user.id}">${user.username}</a>`;
+    likesPanel.appendChild(newParagraph);
+  }
+};
