@@ -7,6 +7,11 @@ import {
 import { findUserById } from "../../business/services/authService.js";
 import { isFollowing } from "../../business/services/followService.js";
 import { getProfileData } from "../../utils/profileHelpers.js";
+import {
+  getFollowingsPhotos,
+  getFollowingsPhotosContent,
+  getHomeData,
+} from "../../utils/homeHelpers.js";
 import { error } from "../../utils/logger.js";
 
 const renderProfile = async (req, res) => {
@@ -66,10 +71,25 @@ const renderUserProfile = async (req, res) => {
   }
 };
 
-const renderHome = (req, res) => {
-  const successMessage = req.query.success || "";
-  const { username } = req.user;
-  res.render("home.ejs", { username, successMessage });
+const renderHome = async (req, res) => {
+  try {
+    const successMessage = req.query.success || "";
+    const user = req.user;
+    const userId = user.id;
+    const photos = await getFollowingsPhotos(userId);
+    const localPhotos = await getFollowingsPhotosContent(photos);
+    const homeData = await getHomeData(user, photos, localPhotos);
+
+    res.render("home.ejs", {
+      ...homeData,
+      successMessage,
+    });
+
+    cleanUpLocalFiles();
+  } catch (err) {
+    error(`Failed to render home page: ${err.message}`);
+    res.status(500).json({ message: "Error rendering home page." });
+  }
 };
 
 const renderAddContent = (req, res) => {

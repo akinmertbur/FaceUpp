@@ -1,13 +1,4 @@
 import {
-  validateBioForm,
-  validateUsernameForm,
-  validateEmailForm,
-  validatePasswordForm,
-  validateAddProfilePictureForm,
-  validateAddCommentForm,
-  validateEditCaptionForm,
-} from "./helpers/formHelpers.js";
-import {
   hideButtons,
   showButtons,
   toggleHideBio,
@@ -34,14 +25,6 @@ import {
   handleFollowFormSubmit,
   handleUnfollowFormSubmit,
 } from "./helpers/apiHelpers.js";
-
-window.validateBioForm = validateBioForm;
-window.validateUsernameForm = validateUsernameForm;
-window.validateEmailForm = validateEmailForm;
-window.validatePasswordForm = validatePasswordForm;
-window.validateAddProfilePictureForm = validateAddProfilePictureForm;
-window.validateAddCommentForm = validateAddCommentForm;
-window.validateEditCaptionForm = validateEditCaptionForm;
 
 window.hideButtons = hideButtons;
 window.showButtons = showButtons;

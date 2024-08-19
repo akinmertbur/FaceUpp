@@ -1,4 +1,13 @@
 "use strict";
+import {
+  validateBioForm,
+  validateUsernameForm,
+  validateEmailForm,
+  validatePasswordForm,
+  validateAddProfilePictureForm,
+  validateAddCommentForm,
+  validateEditCaptionForm,
+} from "./formHelpers.js";
 
 export const handleEditCaptionFormSubmit = async (event, i) => {
   event.preventDefault(); // Prevent the default form submission

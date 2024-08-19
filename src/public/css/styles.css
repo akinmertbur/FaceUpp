@@ -506,3 +506,22 @@ input[type="file"] {
   padding: 5px 10px 5px 10px;
   margin-left: 10px;
 }
+
+.welcome {
+  padding-top: 0;
+}
+
+.welcome img {
+  width: 60px;
+  height: 44px;
+  margin-bottom: 8px;
+}
+
+.welcome p {
+  font-size: 1rem;
+  margin-top: 0;
+}
+
+.welcome h1 {
+  margin-bottom: 0;
+}
