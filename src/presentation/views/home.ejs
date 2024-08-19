@@ -6,64 +6,71 @@
   </div>
 <% } %>
 
-<div class="jumbotron centered welcome">
-  <div class="container">
-    <% if(locals.username) { %>
-      <h1 class="display-5">Welcome to <img src="/svg/logo.svg" alt="logo"> <%= username %></h1>
-    <% } %>
-    <p class="lead">Don't keep your photos, share them with your friends :)</p>
+<% if (locals.user) { %>
+  <div class="jumbotron centered welcome">
+    <div class="container">
+      <h1 class="display-5">Welcome to <img src="/svg/logo.svg" alt="logo"> <%= user.username %></h1>
+      <p class="lead">Don't keep your photos, share them with your friends :)</p>
+    </div>
   </div>
-</div>
-
-<% if (locals.commentsByPhotoUserDetails && locals.commentsByPhoto && locals.likesByPhotoUserDetails && locals.photos_info && locals.photos && photos.length > 0) { %>
-  <div class="photo-gallery">
-    <% for(let i = 0; i<photos.length; i++) { %>
-      <div class="photo-container">
-        <div class="photo-item">
-          <img src="<%= photos[i].localUrl %>" alt="Photo">
-        </div>
-        <div class="photo-bio">
-          <p><%= photos_info[i].caption  %></p>
-        </div>
-        <div class="likes">
-          <div id="likes-panel<%= i %>" class="likes-panel hide">
-            <p style="font-weight: bold;">Likes</p>
-            <% likesByPhotoUserDetails[i].map(user => { %>
-              <p>🩷 <a href="/userProfile/<%= user.id %>"><%= user.username %></a></p>       
-            <% }); %>  
-          </div>
-        </div>
-        <div>
-          <button id="likes-count<%= i %>" class="likes-count-button" onclick="toggleLikesPanel('<%= i %>')"><%= likesByPhotoUserDetails[i].length %> Likes</button>
-        </div>
-        <div class="photo-buttons">
-          <div class="buttons-container">
-            <% if(locals.likeDetails[i]) { %>
-              <form id="unlikeForm<%= i %>" onsubmit="return handleUnlikeFormSubmit(event, '<%= i %>')">
-                <div>
-                  <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
-                  <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
-                </div>
-                <button type="submit" id="disLikeButton<%= i %>" class="like-button liked">Liked</button>
-              </form>
+  
+  <% if (locals.commentsByPhotoUserDetails && locals.commentsByPhoto && locals.likesByPhotoUserDetails && locals.photos_info && locals.photos && photos.length > 0) { %>
+    <div class="photo-gallery">
+      <% for(let i = 0; i<photos.length; i++) { %>
+        <div class="photo-container">
+          <div class="photo-title">
+            <% if (locals.profilePictures) { %>
+              <img src="<%= profilePictures[i] %>" alt="Profile Picture">
             <% } else { %>
-              <form id="likeForm<%= i %>" onsubmit="return handleLikeFormSubmit(event, '<%= i %>')">
-                <div>
-                  <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
-                  <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
-                </div>
-                <button type="submit" id="likeButton<%= i %>" class="like-button">Like</button>
-              </form>
+              <img src="/svg/profile.svg" alt="Profile Picture">
             <% } %>
-            <button id="showCommentButton<%= i %>" class="show-all-comments-button" onclick="toggleCommentsPanel('<%= i %>')">Show All Comments</button>
+            <p><a href="/userProfile/<%= userDetails[i].id %>"><%= userDetails[i].username %></a></p>
           </div>
-          <div id="comments-panel<%= i %>" class="hide comments-panel">
-            <% for (let j = 0; j < commentsByPhoto[i].length; j++) { %>
-              <div id="comment-detail<%= i %><%= j %>" class="comment-detail">
-                <p>💬 <a href="/userProfile/<%= commentsByPhotoUserDetails[i][j].id %>"><%= commentsByPhotoUserDetails[i][j].username %></a>:</p>
-                <p> <%= commentsByPhoto[i][j].comment %> </p>
-                <% if(locals.reqUserId) { %>
-                  <% if(commentsByPhotoUserDetails[i][j].id == reqUserId) { %>
+          <div class="photo-item-home">
+            <img src="<%= photos[i].localUrl %>" alt="Photo">
+          </div>
+          <div class="photo-bio-home">
+            <p><a href="/userProfile/<%= userDetails[i].id %>"><%= userDetails[i].username %></a></p>
+            <p><%= photos_info[i].caption  %></p>
+          </div>
+          <div class="likes">
+            <div id="likes-panel<%= i %>" class="likes-panel hide">
+              <p style="font-weight: bold;">Likes</p>
+              <% likesByPhotoUserDetails[i].map(user => { %>
+                <p>🩷 <a href="/userProfile/<%= user.id %>"><%= user.username %></a></p>       
+              <% }); %>  
+            </div>
+          </div>
+          <div>
+            <button id="likes-count<%= i %>" class="likes-count-button" onclick="toggleLikesPanel('<%= i %>')"><%= likesByPhotoUserDetails[i].length %> Likes</button>
+          </div>
+          <div class="photo-buttons">
+            <div class="buttons-container">
+              <% if(locals.likeDetails[i]) { %>
+                <form id="unlikeForm<%= i %>" onsubmit="return handleUnlikeFormSubmit(event, '<%= i %>')">
+                  <div>
+                    <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                    <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+                  </div>
+                  <button type="submit" id="disLikeButton<%= i %>" class="like-button liked">Liked</button>
+                </form>
+              <% } else { %>
+                <form id="likeForm<%= i %>" onsubmit="return handleLikeFormSubmit(event, '<%= i %>')">
+                  <div>
+                    <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                    <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+                  </div>
+                  <button type="submit" id="likeButton<%= i %>" class="like-button">Like</button>
+                </form>
+              <% } %>
+              <button id="showCommentButton<%= i %>" class="show-all-comments-button" onclick="toggleCommentsPanel('<%= i %>')">Show All Comments</button>
+            </div>
+            <div id="comments-panel<%= i %>" class="hide comments-panel">
+              <% for (let j = 0; j < commentsByPhoto[i].length; j++) { %>
+                <div id="comment-detail<%= i %><%= j %>" class="comment-detail">
+                  <p>💬 <a href="/userProfile/<%= commentsByPhotoUserDetails[i][j].id %>"><%= commentsByPhotoUserDetails[i][j].username %></a>:</p>
+                  <p> <%= commentsByPhoto[i][j].comment %> </p>
+                  <% if(commentsByPhotoUserDetails[i][j].id == user.id) { %>
                     <form id="removeCommentForm<%= i %><%= j %>" onsubmit="return handleRemoveCommentFormSubmit(event, '<%= i %>', '<%= j %>')">
                       <div class="form-group">
                         <input hidden type="text" class="form-control" name="userId" value="<%= commentsByPhotoUserDetails[i][j].id %>">
@@ -75,28 +82,28 @@
                       </button>
                     </form>
                   <% } %>
-                <% } %>
-              </div>
-            <% } %>
-          </div>
-          <div class="comment-form">
-            <form id="addCommentForm<%= i %>" onsubmit="return handleAddCommentFormSubmit(event, '<%= i %>')">
-              <div class="form-group">
-                <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
-                <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
-                <input id="comment-text<%= i %>" type="text" name="comment" placeholder="Type comment..." required>
-                <button type="submit" class="add-comment-button">Add Comment</button>
-              </div>      
-            </form>
+                </div>
+              <% } %>
+            </div>
+            <div class="comment-form addCommmentForm">
+              <form id="addCommentForm<%= i %>" onsubmit="return handleAddCommentFormSubmit(event, '<%= i %>')">
+                <div class="form-group">
+                  <input hidden type="text" class="form-control" name="userId" value="<%= user.id %>">
+                  <input hidden type="text" class="form-control" name="photoId" value="<%= photos_info[i].id %>">
+                  <input id="comment-text<%= i %>" type="text" name="comment" placeholder="Type comment..." required>
+                  <button type="submit" class="add-comment-button">Add Comment</button>
+                </div>      
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-    <% } %>
-  </div>
-<% } else { %>
-  <div class="photo-msg">
-    <p>No photos available</p>
-  </div>
+      <% } %>
+    </div>
+  <% } else { %>
+    <div class="photo-msg">
+      <p>No photos available</p>
+    </div>
+  <% } %>
 <% } %>
 
 <script type="module" src="/js/home.js"></script>

@@ -525,3 +525,39 @@ input[type="file"] {
 .welcome h1 {
   margin-bottom: 0;
 }
+
+.photo-bio-home {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.photo-title {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.photo-title img {
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  margin-right: 0;
+}
+
+.photo-item-home {
+  margin: 20px;
+  margin-left: 50px;
+  margin-top: 0;
+}
+
+.photo-item-home img {
+  width: 900px;
+  height: 650px;
+}
+
+.addCommmentForm {
+  margin-bottom: 60px;
+}

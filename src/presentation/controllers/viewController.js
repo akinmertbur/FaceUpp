@@ -7,11 +7,7 @@ import {
 import { findUserById } from "../../business/services/authService.js";
 import { isFollowing } from "../../business/services/followService.js";
 import { getProfileData } from "../../utils/profileHelpers.js";
-import {
-  getFollowingsPhotos,
-  getFollowingsPhotosContent,
-  getHomeData,
-} from "../../utils/homeHelpers.js";
+import { getHomeData } from "../../utils/homeHelpers.js";
 import { error } from "../../utils/logger.js";
 
 const renderProfile = async (req, res) => {
@@ -75,10 +71,7 @@ const renderHome = async (req, res) => {
   try {
     const successMessage = req.query.success || "";
     const user = req.user;
-    const userId = user.id;
-    const photos = await getFollowingsPhotos(userId);
-    const localPhotos = await getFollowingsPhotosContent(photos);
-    const homeData = await getHomeData(user, photos, localPhotos);
+    const homeData = await getHomeData(user);
 
     res.render("home.ejs", {
       ...homeData,

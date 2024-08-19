@@ -11,7 +11,9 @@ import {
   getCommentsByPhotoUserDetails,
   getLikeDetails,
 } from "../utils/profileHelpers.js";
+import { findUserById } from "../business/services/authService.js";
 import { error } from "../utils/logger.js";
+import { getProfilePicture } from "../utils/profileHelpers.js";
 
 const getFollowingsPhotos = async (userId) => {
   try {
@@ -41,24 +43,64 @@ const getFollowingsPhotosContent = async (photos) => {
   }
 };
 
-const getHomeData = async (user, photos, localPhotos) => {
-  const likesByPhotoUserDetails = await getLikesByPhotoUserDetails(photos);
-  const commentsByPhoto = await getCommentsByPhoto(photos);
-  const commentsByPhotoUserDetails = await getCommentsByPhotoUserDetails(
-    photos
-  );
-  const likeDetails = await getLikeDetails(user.id, photos);
+const getUserDetailByPhoto = async (photos) => {
+  try {
+    const users = await Promise.all(
+      photos.map(async (photo) => {
+        return await findUserById(photo.userId);
+      })
+    );
 
-  return {
-    photos: localPhotos,
-    photos_info: photos,
-    likesByPhotoUserDetails,
-    commentsByPhoto,
-    commentsByPhotoUserDetails,
-    likeDetails,
-    user,
-    username: user.username,
-  };
+    return users;
+  } catch (err) {
+    error(`Failed to get user detail by photo: ${err.message}`);
+    throw new Error("Error getting user detail by photo");
+  }
 };
 
-export { getFollowingsPhotos, getFollowingsPhotosContent, getHomeData };
+const getProfilePicturesForAllUsers = async (users) => {
+  try {
+    const profilePictures = await Promise.all(
+      users.map(async (user) => {
+        return await getProfilePicture(user.id);
+      })
+    );
+
+    return profilePictures;
+  } catch (err) {
+    error(`Failed to get profile pictures for all users: ${err.message}`);
+    throw new Error("Error getting profile pictures for all users");
+  }
+};
+
+const getHomeData = async (user) => {
+  try {
+    const photos = await getFollowingsPhotos(user.id);
+    const localPhotos = await getFollowingsPhotosContent(photos);
+    const likesByPhotoUserDetails = await getLikesByPhotoUserDetails(photos);
+    const commentsByPhoto = await getCommentsByPhoto(photos);
+    const commentsByPhotoUserDetails = await getCommentsByPhotoUserDetails(
+      photos
+    );
+    const likeDetails = await getLikeDetails(user.id, photos);
+    const userDetails = await getUserDetailByPhoto(photos);
+    const profilePictures = await getProfilePicturesForAllUsers(userDetails);
+
+    return {
+      photos: localPhotos,
+      photos_info: photos,
+      likesByPhotoUserDetails,
+      commentsByPhoto,
+      commentsByPhotoUserDetails,
+      likeDetails,
+      user,
+      userDetails,
+      profilePictures,
+    };
+  } catch (err) {
+    error(`Failed to gather homepage data: ${err.message}`);
+    throw new Error("Error gathering homepage data");
+  }
+};
+
+export { getHomeData };
