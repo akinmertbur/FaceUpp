@@ -1,32 +1,20 @@
 // src/controllers/viewController.js
-import {
-  retrievePhotos,
-  downloadPhotos,
-  cleanUpLocalFiles,
-} from "../../business/services/photoService.js";
-import { findUserById } from "../../business/services/authService.js";
+
 import { isFollowing } from "../../business/services/followService.js";
-import { getProfileData } from "../../utils/profileHelpers.js";
-import { getHomeData } from "../../utils/homeHelpers.js";
 import { error } from "../../utils/logger.js";
+import { renderPageWithCleanup } from "../../utils/viewHelpers.js";
+import {
+  prepareProfileData,
+  prepareHomeData,
+} from "../../business/services/viewService.js";
 
 const renderProfile = async (req, res) => {
   try {
-    const user = req.user;
-    const photos = await retrievePhotos(user.id);
-    const localPhotos = await downloadPhotos(photos);
-    const profileData = await getProfileData(
-      user.id,
-      localPhotos,
-      photos,
-      user,
-      null
-    );
+    const userId = req.user.id;
     const errMsg = req.query.errmsg || "";
+    const profileData = await prepareProfileData(userId);
 
-    res.render("profile.ejs", { ...profileData, errMsg });
-
-    cleanUpLocalFiles();
+    await renderPageWithCleanup(res, "profile.ejs", { ...profileData, errMsg });
   } catch (err) {
     error(`Failed to retrieve profile data: ${err.message}`);
     res.status(500).json({ message: "Error retrieving profile data." });
@@ -43,24 +31,13 @@ const renderUserProfile = async (req, res) => {
     }
 
     const following = await isFollowing(reqUserId, userId);
-    const user = await findUserById(userId);
-    const photos = await retrievePhotos(userId);
-    const localPhotos = await downloadPhotos(photos);
-    const profileData = await getProfileData(
-      userId,
-      localPhotos,
-      photos,
-      user,
-      reqUserId
-    );
+    const profileData = await prepareProfileData(userId, reqUserId);
 
-    res.render("userProfile.ejs", {
+    await renderPageWithCleanup(res, "userProfile.ejs", {
       ...profileData,
       following,
       reqUserId,
     });
-
-    cleanUpLocalFiles();
   } catch (err) {
     error(`Failed to render user profile: ${err.message}`);
     res.status(500).json({ message: "Error rendering user profile." });
@@ -70,15 +47,12 @@ const renderUserProfile = async (req, res) => {
 const renderHome = async (req, res) => {
   try {
     const successMessage = req.query.success || "";
-    const user = req.user;
-    const homeData = await getHomeData(user);
+    const homeData = await prepareHomeData(req.user);
 
-    res.render("home.ejs", {
+    await renderPageWithCleanup(res, "home.ejs", {
       ...homeData,
       successMessage,
     });
-
-    cleanUpLocalFiles();
   } catch (err) {
     error(`Failed to render home page: ${err.message}`);
     res.status(500).json({ message: "Error rendering home page." });
