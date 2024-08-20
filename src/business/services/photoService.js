@@ -97,12 +97,12 @@ const downloadPhoto = async (key, localPath) => {
   });
 };
 
-const retrievePhotos = async (userId) => {
+const retrievePhotos = async (userId, filter = {}) => {
   if (!userId) {
     throw new Error("User ID is required");
   }
 
-  return await getPhotos(userId);
+  return await getPhotos(userId, filter);
 };
 
 const downloadPhotos = async (photos) => {

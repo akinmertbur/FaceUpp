@@ -5,9 +5,12 @@ const addPhoto = async (photoData) => {
   return await Photo.create(photoData);
 };
 
-const getPhotos = async (userId) => {
+const getPhotos = async (userId, filter = {}) => {
   return await Photo.findAll({
-    where: { userId: userId },
+    where: {
+      userId,
+      ...filter.where,
+    },
     order: [["id", "ASC"]],
   });
 };

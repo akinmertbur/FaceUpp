@@ -14,13 +14,22 @@ import {
 import { findUserById } from "../business/services/authService.js";
 import { error } from "../utils/logger.js";
 import { getProfilePicture } from "../utils/profileHelpers.js";
+import { Op } from "sequelize";
 
 const getFollowingsPhotos = async (userId) => {
   try {
     const followings = await retrieveFollowings(userId);
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
     const photosPromises = followings.map(async (following) => {
-      const photos = await retrievePhotos(following.followedId);
+      const photos = await retrievePhotos(following.followedId, {
+        where: {
+          createdAt: {
+            [Op.gte]: oneWeekAgo,
+          },
+        },
+      });
       return photos.length > 0 ? photos : [];
     });
 
