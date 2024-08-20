@@ -19,8 +19,7 @@ import { Op } from "sequelize";
 const getFollowingsPhotos = async (userId) => {
   try {
     const followings = await retrieveFollowings(userId);
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    const oneWeekAgo = getOneWeekAgoDate();
 
     const photosPromises = followings.map(async (following) => {
       const photos = await retrievePhotos(following.followedId, {
@@ -40,6 +39,13 @@ const getFollowingsPhotos = async (userId) => {
     error(`Failed to get followings photos: ${err.message}`);
     throw new Error("Error getting followings photos");
   }
+};
+
+const getOneWeekAgoDate = () => {
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+  return oneWeekAgo;
 };
 
 const getFollowingsPhotosContent = async (photos) => {
