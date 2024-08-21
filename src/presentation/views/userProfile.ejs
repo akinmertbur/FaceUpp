@@ -73,6 +73,9 @@
     <div class="photo-gallery">
       <% for(let i = 0; i<photos.length; i++) { %>
         <div class="photo-container">
+          <div class="photo-date">
+            <p id="photo-date<%= i %>"><%= photos_info[i].createdAt.toString().split(' GMT')[0]  %></p>
+          </div>
           <div class="photo-item">
             <img src="<%= photos[i].localUrl %>" alt="Photo">
           </div>

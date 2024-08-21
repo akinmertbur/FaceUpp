@@ -561,3 +561,7 @@ input[type="file"] {
 .addCommmentForm {
   margin-bottom: 60px;
 }
+
+.photo-date {
+  margin-left: 700px;
+}

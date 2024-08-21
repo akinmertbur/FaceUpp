@@ -26,6 +26,9 @@
             <% } %>
             <p><a href="/userProfile/<%= userDetails[i].id %>"><%= userDetails[i].username %></a></p>
           </div>
+          <div class="photo-date">
+            <p id="photo-date<%= i %>"><%= photos_info[i].createdAt.toString().split(' GMT')[0]  %></p>
+          </div>
           <div class="photo-item-home">
             <img src="<%= photos[i].localUrl %>" alt="Photo">
           </div>
