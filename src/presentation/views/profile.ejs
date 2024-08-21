@@ -98,6 +98,11 @@
       <div class="photo-gallery">
         <% for(let i = 0; i<photos.length; i++) { %>
           <div class="photo-container">
+            <div id="hide-info-container<%= i %>" class="hide-info-container">
+              <% if(photos_info[i].caption.toLowerCase() === "hide") { %>
+                <p id="hide-info<%= i %>"> ^^ HIDDEN PHOTO ^^ </p>  
+              <% } %>
+            </div>
             <div class="photo-date">
               <p id="photo-date<%= i %>"><%= photos_info[i].createdAt.toString().split(' GMT')[0]  %></p>
             </div>

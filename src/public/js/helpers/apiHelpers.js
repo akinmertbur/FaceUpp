@@ -33,6 +33,8 @@ export const handleEditCaptionFormSubmit = async (event, i) => {
       // Update the caption display area with the new caption
       document.getElementById(`photo-bio${i}`).innerText =
         updatedCaption.caption;
+
+      handleHideCaption(i, updatedCaption.caption);
     } else {
       if (response.status === 500) {
         alert(`Server Error: ${updatedCaption.message}`);
@@ -647,5 +649,23 @@ const addRemoveUserToPanel = (like, user, i) => {
     const newParagraph = document.createElement("p");
     newParagraph.innerHTML = `🩷 <a href="/userProfile/${user.id}">${user.username}</a>`;
     likesPanel.appendChild(newParagraph);
+  }
+};
+
+const handleHideCaption = (i, caption) => {
+  const container = document.getElementById(`hide-info-container${i}`);
+  const element = container.querySelector("p");
+
+  if (caption.toLowerCase() === "hide") {
+    if (!element) {
+      const newParagraph = document.createElement("p");
+      newParagraph.id = `hide-info${i}`;
+      newParagraph.innerHTML = ` ^^ HIDDEN PHOTO ^^ `;
+      container.appendChild(newParagraph);
+    }
+  } else {
+    if (element) {
+      element.remove();
+    }
   }
 };

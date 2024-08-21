@@ -565,3 +565,9 @@ input[type="file"] {
 .photo-date {
   margin-left: 700px;
 }
+
+.hide-info-container p {
+  position: absolute;
+  left: 350px;
+  color: #b30404;
+}
