@@ -7,8 +7,14 @@ import { fileURLToPath, pathToFileURL } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+/*
 const sequelize = new Sequelize(config.databaseURL, {
-  dialect: "postgres",
+  dialect: config.dialect,
+});
+*/
+// config.url corresponds to config.databaseURL.
+const sequelize = new Sequelize(config.url, {
+  dialect: config.dialect,
 });
 
 const modelsPath = join(__dirname, "../models");
