@@ -15,6 +15,9 @@ export const config = {
     url: process.env.DATABASE_URL,
     dialect: "postgres",
   },
+  databaseURL: process.env.DATABASE_URL,
   port: process.env.PORT || 3000,
   sessionSecret: process.env.SESSION_SECRET,
 };
+
+export default config;
