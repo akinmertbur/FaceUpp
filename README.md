@@ -51,7 +51,7 @@ database=FaceApp
 password=your_database_password
 PORT=3000
 DATABASE_URL=postgres://postgres:your_password@localhost:5432/FaceApp
-SESSION_SECRET="your_secret_key"
+SESSION_SECRET=your_secret_key
 AWS_ACCESS_KEY_ID=your_aws_access_key_id
 AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
 AWS_REGION=your_aws_region
@@ -80,11 +80,11 @@ The app will run on http://localhost:3000.
 
 ## Future Work
 
-**Real-Time Notifications:** Implement a system to notify users in real-time when they receive new followers, likes, or comments.
-**Direct Messaging:** Add a feature that allows users to send direct messages to each other.
-**Photo Tagging:** Allow users to tag other users in their photos.
-**Improved Search Functionality:** Enhance the search feature to include filtering by photo captions or hashtags.
-**Better Performance Optimization:** Implement lazy loading for photos and optimize image compression to improve load times.
+- **Real-Time Notifications:** Implement a system to notify users in real-time when they receive new followers, likes, or comments.
+- **Direct Messaging:** Add a feature that allows users to send direct messages to each other.
+- **Photo Tagging:** Allow users to tag other users in their photos.
+- **Improved Search Functionality:** Enhance the search feature to include filtering by photo captions or hashtags.
+- **Better Performance Optimization:** Implement lazy loading for photos and optimize image compression to improve load times.
 
 ## Contributing
 
