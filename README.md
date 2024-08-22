@@ -65,7 +65,7 @@ npx sequelize-cli --config src/config/config.js db:migrate
 
 **5.Start the Application:**
 ```bash
-npm start
+nodemon src/index.js
 ```
 
 The app will run on http://localhost:3000.
