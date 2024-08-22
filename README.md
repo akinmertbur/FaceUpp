@@ -4,7 +4,7 @@
 
 ## Features
 
-- **User Authentication:** Secure login and registration using JWT tokens.
+- **User Authentication:** Secure login and registration using Passport.js.
 - **Photo Upload and Management:** Users can upload photos, edit captions, and hide photos by setting the caption to "hide."
 - **Follow System:** Users can follow/unfollow others and view photos from those they follow on their home feed.
 - **Comments and Likes:** Users can interact with photos by liking them and adding comments.
