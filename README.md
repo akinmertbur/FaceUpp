@@ -60,7 +60,7 @@ S3_BUCKET=your_s3_bucket_name
 
 **4. Run Migrations:**
 ```bash
-npx sequelize-cli db:migrate
+npx sequelize-cli --config src/config/config.js db:migrate
 ```
 
 **5.Start the Application:**
