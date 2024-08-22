@@ -43,7 +43,7 @@ npm install
 ```
 
 **3. Set Up Environment Variables:**
-Create a .env file in the root directory and add your configuration:
+- Create a .env file in the root directory and add your configuration:
 ```bash
 user=postgres
 host=localhost
