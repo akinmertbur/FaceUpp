@@ -33,7 +33,7 @@ User authentication is handled using Passport.js with a local strategy for secur
 
 **1. Clone the Repository:**
 ```bash
-git clone https://github.com/yourusername/face-app.git
+git clone https://github.com/akinmertbur/face-app.git
 ```
 
 **2. Install Dependencies:**
